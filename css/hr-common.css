@@ -46,6 +46,37 @@
 .item-status-head { display: flex; justify-content: space-between; align-items: baseline; font-size: .78rem; font-weight: 700; color: var(--gray-700, #334155); margin-bottom: 7px; }
 .item-status-head span:last-child { font-size: .74rem; font-weight: 600; color: var(--gray-400); }
 
+/* ── 범용 요약 통계 카드 (급여명세서/연월차/발령지 등) ── */
+.stat-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 22px; box-shadow: var(--shadow-sm); text-align: center; }
+.stat-card-label { font-size: .78rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+.stat-card-value { font-size: 1.5rem; font-weight: 900; color: var(--gray-900); }
+.stat-card-value span { font-size: .85rem; font-weight: 500; color: var(--gray-400); margin-left: 2px; }
+.stat-card.accent .stat-card-value { color: var(--navy); }
+
+/* ── 출퇴근 카드 (일일근태등록) ── */
+.clock-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-xl); padding: 40px 32px; text-align: center; box-shadow: var(--shadow-sm); margin-bottom: 28px; }
+.clock-display { font-size: 2.6rem; font-weight: 900; color: var(--navy); letter-spacing: -0.02em; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+.clock-date { font-size: .9rem; color: var(--gray-600); margin-bottom: 28px; }
+.clock-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.clock-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  width: 120px; padding: 20px 10px; border-radius: var(--radius-lg);
+  border: 2px solid var(--gray-200); background: #fff; cursor: pointer;
+  font-family: var(--font); transition: all .15s;
+}
+.clock-btn i { font-size: 1.6rem; color: var(--gray-400); }
+.clock-btn span { font-size: .88rem; font-weight: 700; color: var(--gray-700, #374151); }
+.clock-btn:hover { border-color: var(--navy); }
+.clock-btn:hover i { color: var(--navy); }
+.clock-btn.in.active  { border-color: var(--green-d); background: var(--green-soft); }
+.clock-btn.in.active i, .clock-btn.in.active span { color: #15803D; }
+.clock-btn.out.active { border-color: var(--danger); background: #FEF2F2; }
+.clock-btn.out.active i, .clock-btn.out.active span { color: var(--danger); }
+.clock-btn:disabled { opacity: .5; cursor: not-allowed; }
+.clock-status { margin-top: 20px; font-size: .88rem; font-weight: 700; color: var(--gray-600); }
+.clock-status strong { color: var(--navy); }
+
 /* ── 설문형 평가 스케일 (iNSIGHT / 다면진단 / 동료진단) ── */
 .survey-question { margin-bottom: 26px; padding-bottom: 26px; border-bottom: 1px dashed var(--gray-200); }
 .survey-question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }

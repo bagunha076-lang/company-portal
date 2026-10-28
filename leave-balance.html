@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#004C98"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <title>연월차조회 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/common-sub.css"/>
+  <link rel="stylesheet" href="css/hr-common.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="app-home.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hr-light">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="app-home.html">메뉴</a><i class="fa-solid fa-chevron-right"></i><span>연월차조회</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-calendar-check"></i> 연월차조회</div>
+      <h1>나의 연차 현황을 확인하세요</h1>
+      <p>올해 발생/사용/잔여 연차와 사용 이력을 한눈에 볼 수 있습니다.</p>
+    </div>
+  </section>
+
+  <main>
+    <div class="page-body">
+
+      <div class="stat-card-grid reveal">
+        <div class="stat-card"><div class="stat-card-label">총 발생 연차</div><div class="stat-card-value">15<span>일</span></div></div>
+        <div class="stat-card accent"><div class="stat-card-label">사용 연차</div><div class="stat-card-value">6<span>일</span></div></div>
+        <div class="stat-card"><div class="stat-card-label">잔여 연차</div><div class="stat-card-value">9<span>일</span></div></div>
+      </div>
+
+      <div class="status-board reveal">
+        <div class="status-board-top">
+          <div class="status-board-title"><i class="fa-solid fa-chart-line"></i> 2026년 연차 사용 현황</div>
+          <span class="badge-open">사용중</span>
+        </div>
+        <div class="progress-overall">
+          <div class="progress-overall-label">
+            <span>연차 사용률</span>
+            <span><strong>40</strong>% (6 / 15일)</span>
+          </div>
+          <div class="progress-bar-track"><div class="progress-bar-fill" data-target="40"></div></div>
+        </div>
+        <div class="calendar-timeline" style="margin-bottom:0;">
+          <div class="ct-track"><div class="ct-progress" id="ctProgress"></div></div>
+          <div class="ct-points">
+            <div class="ct-point done"><div class="ct-dot"></div><div class="ct-label">연차 발생<strong>01.01</strong></div></div>
+            <div class="ct-point done"><div class="ct-dot"></div><div class="ct-label">여름휴가<strong>07.15</strong></div></div>
+            <div class="ct-point active"><div class="ct-dot"></div><div class="ct-label">오늘<strong>07.20</strong></div></div>
+            <div class="ct-point"><div class="ct-dot"></div><div class="ct-label">연차 소멸<strong>12.31</strong></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-clock-rotate-left"></i> 연차 사용 이력</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>유형</th><th>사용일</th><th>일수</th><th>신청일</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr><td>연차</td><td>2026.07.15 ~ 07.17</td><td>3일</td><td>2026.07.01</td><td><span class="chip chip-done">승인완료</span></td></tr>
+              <tr><td>반차</td><td>2026.05.02</td><td>0.5일</td><td>2026.04.28</td><td><span class="chip chip-done">승인완료</span></td></tr>
+              <tr><td>연차</td><td>2026.03.10 ~ 03.12</td><td>2.5일</td><td>2026.03.02</td><td><span class="chip chip-done">승인완료</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="app-home.html"><i class="fa-solid fa-angle-right"></i> 전체 메뉴</a>
+          <a href="attendance-daily.html"><i class="fa-solid fa-angle-right"></i> 일일근태등록</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/leave-balance.js"></script>
+</body>
+</html>

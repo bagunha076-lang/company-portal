@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#004C98"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <title>일일근태등록 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/common-sub.css"/>
+  <link rel="stylesheet" href="css/hr-common.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="app-home.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hr-light">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="app-home.html">메뉴</a><i class="fa-solid fa-chevron-right"></i><span>일일근태등록</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-fingerprint"></i> 일일근태등록</div>
+      <h1>출근과 퇴근을 등록하세요</h1>
+      <p>버튼 한 번으로 오늘의 근태를 기록할 수 있습니다.</p>
+    </div>
+  </section>
+
+  <main>
+    <div class="page-body">
+
+      <div class="clock-card reveal">
+        <div class="clock-display" id="liveClock">00:00:00</div>
+        <div class="clock-date" id="liveDate">-</div>
+        <div class="clock-actions">
+          <button class="clock-btn in" id="checkInBtn"><i class="fa-solid fa-right-to-bracket"></i><span>출근</span></button>
+          <button class="clock-btn out" id="checkOutBtn" disabled><i class="fa-solid fa-right-from-bracket"></i><span>퇴근</span></button>
+        </div>
+        <div class="clock-status" id="clockStatus">아직 출근하지 않았습니다.</div>
+      </div>
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-table-list"></i> 이번달 근태기록</h3>
+        <div class="table-wrap">
+          <table class="data-table" id="attendanceTable">
+            <thead><tr><th>날짜</th><th>출근시간</th><th>퇴근시간</th><th>근무시간</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr><td>2026.07.21</td><td>08:52</td><td>18:04</td><td>9시간 12분</td><td><span class="chip chip-done">정상</span></td></tr>
+              <tr><td>2026.07.20</td><td>08:47</td><td>17:58</td><td>9시간 11분</td><td><span class="chip chip-done">정상</span></td></tr>
+              <tr><td>2026.07.19</td><td>09:15</td><td>18:10</td><td>8시간 55분</td><td><span class="chip chip-pending">지각</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="app-home.html"><i class="fa-solid fa-angle-right"></i> 전체 메뉴</a>
+          <a href="attendance-special.html"><i class="fa-solid fa-angle-right"></i> 특이근태등록</a>
+          <a href="attendance-correction.html"><i class="fa-solid fa-angle-right"></i> 근태수정신청</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/attendance-daily.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#004C98"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <title>급여명세서 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/common-sub.css"/>
+  <link rel="stylesheet" href="css/hr-common.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="app-home.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hr-light">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="app-home.html">메뉴</a><i class="fa-solid fa-chevron-right"></i><span>급여명세서</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-file-invoice-dollar"></i> 급여명세서</div>
+      <h1>월별 급여명세서를 확인하세요</h1>
+      <p>지급 내역과 공제 내역을 상세히 조회할 수 있습니다.</p>
+    </div>
+  </section>
+
+  <main>
+    <div class="page-body">
+
+      <div class="history-filter reveal">
+        <select id="monthSelect">
+          <option value="2026-07">2026년 7월</option>
+          <option value="2026-06">2026년 6월</option>
+          <option value="2026-05">2026년 5월</option>
+        </select>
+        <button class="btn btn-secondary btn-icon" id="downloadBtn"><i class="fa-solid fa-download"></i> PDF 다운로드</button>
+      </div>
+
+      <div class="stat-card-grid reveal">
+        <div class="stat-card accent">
+          <div class="stat-card-label">지급 총액</div>
+          <div class="stat-card-value">4,820,000<span>원</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">공제 총액</div>
+          <div class="stat-card-value">612,400<span>원</span></div>
+        </div>
+        <div class="stat-card accent">
+          <div class="stat-card-label">실수령액</div>
+          <div class="stat-card-value">4,207,600<span>원</span></div>
+        </div>
+      </div>
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-circle-plus"></i> 지급 내역</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>항목</th><th>금액</th></tr></thead>
+            <tbody>
+              <tr><td>기본급</td><td>3,800,000원</td></tr>
+              <tr><td>직책수당</td><td>300,000원</td></tr>
+              <tr><td>연장근로수당</td><td>420,000원</td></tr>
+              <tr><td>식대</td><td>200,000원</td></tr>
+              <tr><td>교통비</td><td>100,000원</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-circle-minus"></i> 공제 내역</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>항목</th><th>금액</th></tr></thead>
+            <tbody>
+              <tr><td>국민연금</td><td>216,900원</td></tr>
+              <tr><td>건강보험</td><td>170,800원</td></tr>
+              <tr><td>고용보험</td><td>43,400원</td></tr>
+              <tr><td>소득세</td><td>151,300원</td></tr>
+              <tr><td>지방소득세</td><td>30,000원</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="app-home.html"><i class="fa-solid fa-angle-right"></i> 전체 메뉴</a>
+          <a href="leave-balance.html"><i class="fa-solid fa-angle-right"></i> 연월차조회</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/payslip.js"></script>
+</body>
+</html>

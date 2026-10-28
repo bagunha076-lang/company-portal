@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#004C98"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <title>iNSIGHT 수시피드백 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/common-sub.css"/>
+  <link rel="stylesheet" href="css/hr-common.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="app-home.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hr-light">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="app-home.html">메뉴</a><i class="fa-solid fa-chevron-right"></i><span>iNSIGHT 수시피드백</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-comment-dots"></i> iNSIGHT</div>
+      <h1>동료에게 수시 피드백을 전해보세요</h1>
+      <p>칭찬, 제안, 우려 사항을 가볍게 남기면 상대방에게 전달됩니다.</p>
+    </div>
+  </section>
+
+  <main>
+    <div class="page-body">
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-paper-plane"></i> 피드백 보내기</h3>
+
+        <form id="insightForm" novalidate>
+          <div class="form-section">
+            <h4 class="form-section-title">받는 사람 <span class="req">*</span></h4>
+            <div class="form-row" style="grid-template-columns: 1fr;">
+              <div class="form-group">
+                <select name="receiver" required>
+                  <option value="">동료를 선택하세요</option>
+                  <option value="김철수 (개발팀)">김철수 (개발팀)</option>
+                  <option value="이영희 (인사팀)">이영희 (인사팀)</option>
+                  <option value="박민준 (영업팀)">박민준 (영업팀)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <h4 class="form-section-title">피드백 유형 <span class="req">*</span></h4>
+            <div class="rate-scale" id="feedbackTypeGroup">
+              <label class="rate-option" style="width:auto;">
+                <input type="radio" name="feedback_type" value="칭찬" required/>
+                <span style="width:auto;height:auto;border-radius:100px;padding:10px 20px;"><i class="fa-solid fa-thumbs-up"></i>&nbsp; 칭찬</span>
+              </label>
+              <label class="rate-option" style="width:auto;">
+                <input type="radio" name="feedback_type" value="제안"/>
+                <span style="width:auto;height:auto;border-radius:100px;padding:10px 20px;"><i class="fa-solid fa-lightbulb"></i>&nbsp; 제안</span>
+              </label>
+              <label class="rate-option" style="width:auto;">
+                <input type="radio" name="feedback_type" value="우려"/>
+                <span style="width:auto;height:auto;border-radius:100px;padding:10px 20px;"><i class="fa-solid fa-triangle-exclamation"></i>&nbsp; 우려</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-section" style="border:none; margin:0; padding:0;">
+            <h4 class="form-section-title">메시지 <span class="req">*</span></h4>
+            <textarea name="message" rows="4" placeholder="전하고 싶은 내용을 자유롭게 작성해 주세요." required></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="reset" class="btn btn-secondary">초기화</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> 피드백 보내기</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-clock-rotate-left"></i> 내가 보낸 피드백</h3>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>보낸 날짜</th><th>받는 사람</th><th>유형</th><th>내용</th></tr></thead>
+            <tbody id="sentFeedbackBody">
+              <tr><td>2026.07.18</td><td>김철수 (개발팀)</td><td><span class="badge badge-green">칭찬</span></td><td>프로젝트 마감 도와주셔서 감사했습니다!</td></tr>
+              <tr><td>2026.07.02</td><td>이영희 (인사팀)</td><td><span class="badge badge-navy">제안</span></td><td>신규 입사자 온보딩 자료를 더 간결하게 해보면 어떨까요.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="successModal">
+    <div class="modal modal-sm">
+      <div class="modal-body" style="text-align:center;padding:40px 32px;">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>피드백을 보냈습니다!</h3>
+        <p>소중한 의견이 상대방에게 전달되었습니다.</p>
+        <button class="btn btn-primary" id="successClose" style="margin-top:24px;">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="app-home.html"><i class="fa-solid fa-angle-right"></i> 전체 메뉴</a>
+          <a href="uniform.html"><i class="fa-solid fa-angle-right"></i> 근무복 신청</a>
+          <a href="welfare.html"><i class="fa-solid fa-angle-right"></i> 복지포인트</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-phone"></i></div>
+            <div><div class="footer-contact-label">Tel</div><div class="footer-contact-value">055-000-0000 (내선 1234)</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/insight-feedback.js"></script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#004C98"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <title>특이근태등록 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/common-sub.css"/>
+  <link rel="stylesheet" href="css/hr-common.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="app-home.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hr-light">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="app-home.html">메뉴</a><i class="fa-solid fa-chevron-right"></i><span>특이근태등록</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-calendar-plus"></i> 특이근태등록</div>
+      <h1>외근·출장·반차 등을 등록하세요</h1>
+      <p>일반 출퇴근 외 특이 근태를 사전에 등록합니다.</p>
+    </div>
+  </section>
+
+  <main>
+    <div class="page-body">
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-pen-to-square"></i> 특이근태 등록</h3>
+        <form id="specialForm" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label>근태 유형 <span class="req">*</span></label>
+              <select name="type" required>
+                <option value="">선택하세요</option>
+                <option>외근</option>
+                <option>출장</option>
+                <option>반차(오전)</option>
+                <option>반차(오후)</option>
+                <option>조퇴</option>
+                <option>병가</option>
+              </select>
+            </div>
+            <div class="form-group"><label>시작일 <span class="req">*</span></label><input type="date" name="start_date" required/></div>
+            <div class="form-group"><label>종료일 <span class="req">*</span></label><input type="date" name="end_date" required/></div>
+            <div class="form-group"><label>연락처</label><input type="tel" name="phone" placeholder="010-0000-0000"/></div>
+          </div>
+          <div class="form-section" style="border:none; margin:0; padding:0;">
+            <h4 class="form-section-title">사유 <span class="req">*</span></h4>
+            <textarea name="reason" rows="3" placeholder="사유를 입력해주세요." required></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="reset" class="btn btn-secondary">초기화</button>
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> 등록하기</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-card reveal">
+        <h3 class="form-title"><i class="fa-solid fa-clock-rotate-left"></i> 등록 이력</h3>
+        <div class="table-wrap">
+          <table class="data-table" id="specialHistoryTable">
+            <thead><tr><th>등록일</th><th>유형</th><th>기간</th><th>사유</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr><td>2026.07.10</td><td>출장</td><td>2026.07.14 ~ 07.15</td><td>서산1공장 설비 점검</td><td><span class="chip chip-done">승인완료</span></td></tr>
+              <tr><td>2026.06.02</td><td>반차(오후)</td><td>2026.06.05</td><td>병원 진료</td><td><span class="chip chip-done">승인완료</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="successModal">
+    <div class="modal modal-sm">
+      <div class="modal-body" style="text-align:center;padding:40px 32px;">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>특이근태가 등록되었습니다</h3>
+        <p>담당자 승인 후 근태기록에 반영됩니다.</p>
+        <button class="btn btn-primary" id="successClose" style="margin-top:24px;">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="app-home.html"><i class="fa-solid fa-angle-right"></i> 전체 메뉴</a>
+          <a href="attendance-daily.html"><i class="fa-solid fa-angle-right"></i> 일일근태등록</a>
+          <a href="shift-swap.html"><i class="fa-solid fa-angle-right"></i> 대근대휴신청</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/attendance-special.js"></script>
+</body>
+</html>

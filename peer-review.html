@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#004C98"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <title>위아다운 동료진단 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/common-sub.css"/>
+  <link rel="stylesheet" href="css/hr-common.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="app-home.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hr-light">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="app-home.html">메뉴</a><i class="fa-solid fa-chevron-right"></i><span>위아다운 동료진단</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-users"></i> 위아다운 동료진단</div>
+      <h1>함께 일하는 동료를 진단해 주세요</h1>
+      <p>동료별로 탭을 전환하며 간단한 설문을 완료할 수 있습니다.</p>
+    </div>
+  </section>
+
+  <div class="tab-nav-wrap">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" data-tab="peer-1"><i class="fa-solid fa-user"></i> 김철수 (개발팀)</button>
+      <button class="tab-btn" data-tab="peer-2"><i class="fa-solid fa-user"></i> 이영희 (인사팀)</button>
+      <button class="tab-btn" data-tab="peer-3"><i class="fa-solid fa-user"></i> 박민준 (영업팀)</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="tab-panel active" id="tab-peer-1">
+      <div class="page-body">
+        <div class="form-card reveal">
+          <h3 class="form-title"><i class="fa-solid fa-clipboard-check"></i> 김철수님 평가</h3>
+          <form class="peer-form" data-peer="김철수" novalidate>
+            <div class="survey-question">
+              <div class="survey-q-text">협업 시 적극적으로 소통하고 의견을 공유한다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p1_q1" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q1" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q1" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q1" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q1" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="survey-question">
+              <div class="survey-q-text">맡은 업무를 책임감 있게 완수한다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p1_q2" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q2" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q2" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q2" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q2" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="survey-question" style="border:none; margin:0; padding:0;">
+              <div class="survey-q-text">동료로서 함께 일하고 싶은 사람이다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p1_q3" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q3" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q3" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q3" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p1_q3" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fa-solid fa-check-circle"></i> 제출</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-peer-2">
+      <div class="page-body">
+        <div class="form-card reveal">
+          <h3 class="form-title"><i class="fa-solid fa-clipboard-check"></i> 이영희님 평가</h3>
+          <form class="peer-form" data-peer="이영희" novalidate>
+            <div class="survey-question">
+              <div class="survey-q-text">협업 시 적극적으로 소통하고 의견을 공유한다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p2_q1" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q1" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q1" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q1" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q1" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="survey-question">
+              <div class="survey-q-text">맡은 업무를 책임감 있게 완수한다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p2_q2" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q2" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q2" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q2" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q2" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="survey-question" style="border:none; margin:0; padding:0;">
+              <div class="survey-q-text">동료로서 함께 일하고 싶은 사람이다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p2_q3" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q3" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q3" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q3" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p2_q3" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fa-solid fa-check-circle"></i> 제출</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-peer-3">
+      <div class="page-body">
+        <div class="form-card reveal">
+          <h3 class="form-title"><i class="fa-solid fa-clipboard-check"></i> 박민준님 평가</h3>
+          <form class="peer-form" data-peer="박민준" novalidate>
+            <div class="survey-question">
+              <div class="survey-q-text">협업 시 적극적으로 소통하고 의견을 공유한다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p3_q1" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q1" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q1" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q1" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q1" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="survey-question">
+              <div class="survey-q-text">맡은 업무를 책임감 있게 완수한다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p3_q2" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q2" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q2" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q2" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q2" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="survey-question" style="border:none; margin:0; padding:0;">
+              <div class="survey-q-text">동료로서 함께 일하고 싶은 사람이다.</div>
+              <div class="rate-scale">
+                <label class="rate-option"><input type="radio" name="p3_q3" value="1" required/><span>1</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q3" value="2"/><span>2</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q3" value="3"/><span>3</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q3" value="4"/><span>4</span></label>
+                <label class="rate-option"><input type="radio" name="p3_q3" value="5"/><span>5</span></label>
+              </div>
+            </div>
+            <div class="form-actions"><button type="submit" class="btn btn-primary"><i class="fa-solid fa-check-circle"></i> 제출</button></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="successModal">
+    <div class="modal modal-sm">
+      <div class="modal-body" style="text-align:center;padding:40px 32px;">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3 id="successTitle">평가가 제출되었습니다!</h3>
+        <p>다음 동료의 평가도 이어서 진행해 주세요.</p>
+        <button class="btn btn-primary" id="successClose" style="margin-top:24px;">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="app-home.html"><i class="fa-solid fa-angle-right"></i> 전체 메뉴</a>
+          <a href="leadership-review.html"><i class="fa-solid fa-angle-right"></i> 리더십 다면진단</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/pwa.js"></script>
+  <script src="js/peer-review.js"></script>
+</body>
+</html>
