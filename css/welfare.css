@@ -32,11 +32,11 @@
 .role-btn i { font-size: 1.6rem; color: #94a3b8; }
 .role-btn span { font-size: .95rem; font-weight: 700; color: #374151; }
 .role-btn small { font-size: .75rem; color: #94a3b8; }
-.role-btn:hover { border-color: #2563eb; background: #eff6ff; }
-.role-btn:hover i { color: #2563eb; }
-.role-btn.active { border-color: #2563eb; background: #eff6ff; }
-.role-btn.active i { color: #2563eb; }
-.role-btn.active span { color: #2563eb; }
+.role-btn:hover { border-color: #004C98; background: #eff6ff; }
+.role-btn:hover i { color: #004C98; }
+.role-btn.active { border-color: #004C98; background: #eff6ff; }
+.role-btn.active i { color: #004C98; }
+.role-btn.active span { color: #004C98; }
 
 /* ─── 역할별 뷰 ─── */
 .role-view { display: none; }
@@ -89,7 +89,7 @@
   align-items: center;
   gap: 10px;
 }
-.gc-form-title i { color: #2563eb; }
+.gc-form-title i { color: #004C98; }
 .gc-form-body { padding: 28px; }
 
 /* ─── STEP ─── */
@@ -111,7 +111,7 @@
 }
 .gc-step-num {
   width: 26px; height: 26px;
-  background: #2563eb;
+  background: #004C98;
   color: #fff;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -151,7 +151,7 @@
   transition: border-color .2s, box-shadow .2s;
   box-sizing: border-box;
 }
-.gc-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+.gc-input:focus { border-color: #004C98; box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 .gc-input-ro {
   width: 100%;
   padding: 10px 14px;
@@ -210,7 +210,7 @@
 .gc-pt-unit { padding: 0 12px; font-size: .85rem; color: #64748b; background: #f8fafc; border-left: 1px solid #e2e8f0; }
 .gc-btn-all {
   padding: 9px 18px;
-  background: #2563eb;
+  background: #004C98;
   color: #fff;
   border: none;
   border-radius: 9px;
@@ -220,7 +220,7 @@
   font-family: var(--font);
   transition: background .2s;
 }
-.gc-btn-all:hover { background: #1d4ed8; }
+.gc-btn-all:hover { background: #003870; }
 
 /* ─── 상품권 선택 카드 ─── */
 .gc-card-type-grid {
@@ -240,7 +240,7 @@
   background: #fff;
 }
 .gc-card-type-item input:checked + .gc-card-type-box {
-  border-color: #2563eb;
+  border-color: #004C98;
   background: #eff6ff;
   box-shadow: 0 0 0 3px rgba(37,99,235,.12);
 }
@@ -279,7 +279,7 @@
 .gc-calc-row span em { font-style: normal; font-size: .78rem; color: #64748b; margin-left: 4px; }
 .gc-calc-row.accent strong { color: #16a34a; font-size: 1rem; }
 .gc-calc-row.total { font-weight: 800; font-size: 1rem; }
-.gc-calc-row.total strong { color: #2563eb; font-size: 1.1rem; }
+.gc-calc-row.total strong { color: #004C98; font-size: 1.1rem; }
 
 /* ─── 권종 테이블 ─── */
 .gc-denom-wrap { overflow-x: auto; }
@@ -304,7 +304,7 @@
   font-size: .78rem;
   font-weight: 800;
 }
-.gc-denom-badge.d10  { background: #dbeafe; color: #1d4ed8; }
+.gc-denom-badge.d10  { background: #dbeafe; color: #003870; }
 .gc-denom-badge.d5   { background: #d1fae5; color: #065f46; }
 .gc-denom-badge.d1   { background: #fef9c3; color: #854d0e; }
 .gc-denom-badge.d05  { background: #fce7f3; color: #9d174d; }
@@ -319,9 +319,9 @@
   outline: none;
   transition: border-color .2s;
 }
-.gc-qty-input:focus { border-color: #2563eb; }
+.gc-qty-input:focus { border-color: #004C98; }
 .gc-subtotal { color: #374151; font-weight: 600; }
-.gc-confirm-total { color: #2563eb; font-weight: 800; font-size: 1rem; }
+.gc-confirm-total { color: #004C98; font-weight: 800; font-size: 1rem; }
 .gc-btn-auto {
   padding: 10px 14px;
   background: #7c3aed;
@@ -363,8 +363,8 @@
 }
 .gc-btn-save {
   padding: 12px 26px;
-  border: 1.5px solid #2563eb;
-  color: #2563eb;
+  border: 1.5px solid #004C98;
+  color: #004C98;
   background: #fff;
   border-radius: 10px;
   cursor: pointer;
@@ -376,7 +376,7 @@
 .gc-btn-save:hover { background: #eff6ff; }
 .gc-btn-submit {
   padding: 12px 28px;
-  background: #2563eb;
+  background: #004C98;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -386,7 +386,7 @@
   font-family: var(--font);
   transition: background .2s;
 }
-.gc-btn-submit:hover { background: #1d4ed8; }
+.gc-btn-submit:hover { background: #003870; }
 .gc-btn-submit:disabled { background: #94a3b8; cursor: not-allowed; }
 
 /* ─── 부서담당자: 공지 박스 ─── */
@@ -435,13 +435,13 @@
   transition: all .2s;
   background: #f8fafc;
 }
-.gc-upload-drop.drag-over { border-color: #2563eb; background: #eff6ff; }
+.gc-upload-drop.drag-over { border-color: #004C98; background: #eff6ff; }
 .gc-upload-icon { font-size: 2.5rem; color: #94a3b8; margin-bottom: 12px; }
 .gc-upload-text { font-size: .95rem; color: #374151; margin-bottom: 12px; }
 .gc-btn-file-select {
   display: inline-block;
   padding: 9px 22px;
-  background: #2563eb;
+  background: #004C98;
   color: #fff;
   border-radius: 9px;
   cursor: pointer;
@@ -495,7 +495,7 @@
 }
 .gc-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2563eb, #60a5fa);
+  background: linear-gradient(90deg, #004C98, #60a5fa);
   border-radius: 100px;
   width: 0%;
   transition: width .3s;
@@ -507,7 +507,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 24px;
-  background: #2563eb;
+  background: #004C98;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -517,7 +517,7 @@
   font-family: var(--font);
   transition: background .2s;
 }
-.gc-btn-upload:hover { background: #1d4ed8; }
+.gc-btn-upload:hover { background: #003870; }
 
 /* ─── 업로드 통계 ─── */
 .gc-upload-stats {
@@ -541,7 +541,7 @@
 .gc-stat-card > i { font-size: 1.5rem; }
 .gc-stat-card.success > i { color: #16a34a; }
 .gc-stat-card.warning > i { color: #ca8a04; }
-.gc-stat-card.info    > i { color: #2563eb; }
+.gc-stat-card.info    > i { color: #004C98; }
 .gc-stat-label { font-size: .78rem; font-weight: 700; color: #64748b; margin-bottom: 4px; }
 .gc-stat-val { font-size: 1.6rem; font-weight: 900; color: #0f172a; display: inline; }
 .gc-stat-card.success .gc-stat-val { color: #16a34a; }
@@ -603,10 +603,10 @@
   cursor: pointer;
   transition: border-color .2s;
 }
-.gc-select:focus { border-color: #2563eb; }
+.gc-select:focus { border-color: #004C98; }
 .gc-btn-search {
   padding: 8px 18px;
-  background: #2563eb;
+  background: #004C98;
   color: #fff;
   border: none;
   border-radius: 9px;
@@ -619,7 +619,7 @@
   gap: 6px;
   transition: background .2s;
 }
-.gc-btn-search:hover { background: #1d4ed8; }
+.gc-btn-search:hover { background: #003870; }
 .gc-btn-excel-dl {
   padding: 9px 18px;
   background: #16a34a;
@@ -663,7 +663,7 @@
 }
 .gc-ct-item.best { border-color: #fde047; background: #fefce8; }
 .gc-ct-name { font-size: .88rem; font-weight: 800; color: #374151; margin-bottom: 8px; }
-.gc-ct-cnt  { font-size: 1rem; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
+.gc-ct-cnt  { font-size: 1rem; font-weight: 700; color: #004C98; margin-bottom: 4px; }
 .gc-ct-amt  { font-size: .85rem; color: #64748b; margin-bottom: 10px; }
 .gc-ct-payout { padding-top: 10px; border-top: 1px solid #e2e8f0; }
 .gc-ct-payout small { display: block; font-size: .72rem; color: #94a3b8; margin-bottom: 3px; }
@@ -741,7 +741,7 @@
 .gc-btn-cancel:hover { background: #f8fafc; }
 .gc-btn-confirm {
   padding: 10px 22px;
-  background: #2563eb;
+  background: #004C98;
   color: #fff;
   border: none;
   border-radius: 9px;
@@ -752,7 +752,7 @@
   display: flex; align-items: center; gap: 7px;
   transition: background .2s;
 }
-.gc-btn-confirm:hover { background: #1d4ed8; }
+.gc-btn-confirm:hover { background: #003870; }
 
 /* ─── 최종 확인 모달 ─── */
 .gc-confirm-summary {
@@ -762,7 +762,7 @@
 .gc-confirm-table td { padding: 10px 12px; border: 1px solid #e2e8f0; }
 .gc-confirm-table td:first-child { color: #64748b; width: 40%; background: #f8fafc; font-weight: 600; }
 .gc-confirm-table td:last-child { font-weight: 700; color: #0f172a; }
-.gc-confirm-table .highlight { color: #2563eb !important; font-size: 1.05rem; }
+.gc-confirm-table .highlight { color: #004C98 !important; font-size: 1.05rem; }
 
 /* ─── 오류 모달 ─── */
 .gc-error-modal { max-width: 700px; }
@@ -812,7 +812,7 @@
 .gc-toast.show { transform: translateX(0); opacity: 1; }
 .gc-toast.success { background: #16a34a; }
 .gc-toast.error   { background: #dc2626; }
-.gc-toast.info    { background: #2563eb; }
+.gc-toast.info    { background: #004C98; }
 .gc-toast.warning { background: #d97706; }
 
 /* ─── 공통 유틸 ─── */

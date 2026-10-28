@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>복지포인트 - 총무포털</title>
-  <link rel="stylesheet" href="css/style.css"/>
-  <link rel="stylesheet" href="css/sub.css"/>
+  <title>복지포인트 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="css/common-sub.css"/>
   <link rel="stylesheet" href="css/welfare.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -18,8 +18,8 @@
 <header class="site-header" id="siteHeader">
   <div class="header-inner">
     <a href="index.html" class="logo">
-      <div class="logo-mark">G</div>
-      <span class="logo-text">총무포털</span>
+      <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+      <span class="logo-text">모아</span>
     </a>
     <nav class="gnb">
       <a href="uniform.html" class="gnb-link">근무복 신청</a>
@@ -49,89 +49,33 @@
 </div>
 <div class="drawer-overlay" id="drawerOverlay"></div>
 
-<!-- ===== 히어로 ===== -->
-<section class="sub-hero hero-orange">
+<!-- 서브 히어로 (사진 순환) -->
+<section class="sub-hero" id="svcHero">
+  <div class="sub-hero-slide active">
+    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1600&q=80&auto=format&fit=crop" alt=""/>
+  </div>
+  <!--
+    TODO: 아래 2개 slide의 이미지를 원하는 사진으로 교체하세요.
+    참고 (Unsplash 무료, 저작권 걱정 없음):
+    https://unsplash.com/s/photos/employee-benefits
+    https://unsplash.com/s/photos/gift-card
+  -->
+  <div class="sub-hero-slide">
+    <img src="https://images.unsplash.com/photo-1607863680198-23d4b2565df0?w=1600&q=80&auto=format&fit=crop" alt=""/>
+  </div>
+  <div class="sub-hero-slide">
+    <img src="https://images.unsplash.com/photo-1512909006721-3d6018887383?w=1600&q=80&auto=format&fit=crop" alt=""/>
+  </div>
+  <div class="sub-hero-overlay"></div>
   <div class="sub-hero-inner">
-    <div class="sub-hero-left">
-      <div class="sub-breadcrumb">
-        <a href="index.html">홈</a>
-        <i class="fa-solid fa-chevron-right"></i>
-        <span>복지포인트</span>
-      </div>
-      <div class="sub-hero-tag"><i class="fa-solid fa-coins"></i> 복지포인트</div>
-      <h1>연간 복지포인트<br/>현황을 확인하세요</h1>
-      <p>신청 가능 포인트 확인 및<br/>상품권 전환 신청을 해주세요.</p>
-      <div class="sub-hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-icon"><i class="fa-solid fa-coins"></i></div>
-          <div class="hero-stat-info">
-            <span class="hero-stat-val" id="heroAvailPt">- 원</span>
-            <span class="hero-stat-label">신청 가능 포인트</span>
-          </div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-icon"><i class="fa-solid fa-user"></i></div>
-          <div class="hero-stat-info">
-            <span class="hero-stat-val" id="heroEmpName">-</span>
-            <span class="hero-stat-label">로그인 사용자</span>
-          </div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-icon"><i class="fa-solid fa-gift"></i></div>
-          <div class="hero-stat-info">
-            <span class="hero-stat-val" id="heroDeadlineDday">D-?</span>
-            <span class="hero-stat-label">상품권 신청 마감</span>
-          </div>
-        </div>
-      </div>
+    <div class="sub-breadcrumb">
+      <a href="index.html">홈</a>
+      <i class="fa-solid fa-chevron-right"></i>
+      <span>복지포인트</span>
     </div>
-    <div class="sub-hero-right">
-      <div class="hero-deco hero-deco-1"></div>
-      <div class="hero-deco hero-deco-2"></div>
-      <div class="hero-deco hero-deco-3"></div>
-      <div class="hero-card">
-        <div class="hero-card-header">
-          <span class="hero-card-title">🪙 내 포인트 현황</span>
-          <span class="hero-card-badge">2026년</span>
-        </div>
-        <div class="hero-point-amount">
-          <span class="hero-point-number" id="heroPointNumber">0</span>
-          <span class="hero-point-unit">원 잔여</span>
-        </div>
-        <div class="hero-gauge">
-          <div class="hero-gauge-label">
-            <span id="heroGaugeUsed">사용 0원</span>
-            <span id="heroGaugeTotal">총 0원</span>
-          </div>
-          <div class="hero-gauge-bar">
-            <div class="hero-gauge-fill" id="heroGaugeFill"></div>
-          </div>
-        </div>
-        <div class="hero-card-items">
-          <div class="hero-card-item">
-            <div class="hero-item-left">
-              <div class="hero-item-dot green"></div>
-              <span>신청 가능 포인트</span>
-            </div>
-            <span class="hero-item-val" id="heroCardAvail">-</span>
-          </div>
-          <div class="hero-card-item">
-            <div class="hero-item-left">
-              <div class="hero-item-dot yellow"></div>
-              <span>24년 잔여 포인트</span>
-            </div>
-            <span class="hero-item-val" id="heroCardPrev">-</span>
-          </div>
-          <div class="hero-card-item">
-            <div class="hero-item-left">
-              <div class="hero-item-dot" id="heroStatusDot" style="background:#94a3b8"></div>
-              <span>신청 상태</span>
-            </div>
-            <span class="hero-item-val" id="heroCardStatus">미신청</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="sub-hero-tag"><i class="fa-solid fa-coins"></i> 복지포인트</div>
+    <h1>연간 복지포인트<br/>현황을 확인하세요</h1>
+    <p>신청 가능 포인트 확인 및 상품권 전환 신청을 해주세요.</p>
   </div>
 </section>
 
@@ -182,7 +126,7 @@
 
         <div class="gc-summary-cards">
           <div class="gc-sc">
-            <div class="gc-sc-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-wallet"></i></div>
+            <div class="gc-sc-icon" style="background:#eff6ff;color:#004C98"><i class="fa-solid fa-wallet"></i></div>
             <div class="gc-sc-body">
               <div class="gc-sc-label">보유 포인트</div>
               <div class="gc-sc-val" id="empTotalPt">-</div>
@@ -501,7 +445,7 @@
 
         <!-- 포인트 등록 버튼 -->
         <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
-          <button id="openPointRegBtn" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
+          <button id="openPointRegBtn" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#004C98;color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
             <i class="fa-solid fa-coins"></i> 직원 포인트 등록 / 수정
           </button>
         </div>
@@ -519,7 +463,7 @@
         <!-- 집계 카드 -->
         <div class="gc-admin-stats">
           <div class="gc-adstat">
-            <div class="gc-adstat-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-users"></i></div>
+            <div class="gc-adstat-icon" style="background:#eff6ff;color:#004C98"><i class="fa-solid fa-users"></i></div>
             <div class="gc-adstat-body"><div class="gc-adstat-label">전체 신청 인원</div><div class="gc-adstat-val" id="adStatTotal">-</div></div>
           </div>
           <div class="gc-adstat">
@@ -640,7 +584,7 @@
     <div class="page-body">
       <div style="margin-bottom:24px;">
         <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:6px;">
-          <i class="fa-solid fa-receipt" style="color:#2563eb;margin-right:8px;"></i> 나의 상품권 신청 내역
+          <i class="fa-solid fa-receipt" style="color:#004C98;margin-right:8px;"></i> 나의 상품권 신청 내역
         </h3>
         <p style="font-size:.85rem;color:#64748b;">본인이 신청한 상품권 전환 내역을 확인할 수 있습니다.</p>
       </div>
@@ -684,7 +628,7 @@
 <div class="gc-modal-overlay" id="pointRegModal" style="display:none;">
   <div class="gc-modal-box" style="max-width:860px;width:95%;">
     <div class="gc-modal-header">
-      <h3><i class="fa-solid fa-coins" style="color:#2563eb"></i> 직원 포인트 관리</h3>
+      <h3><i class="fa-solid fa-coins" style="color:#004C98"></i> 직원 포인트 관리</h3>
       <button class="gc-modal-close" id="pointRegModalClose"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
@@ -714,7 +658,7 @@
             </div>
           </div>
           <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:12px;">
-            <div style="font-size:.78rem;font-weight:700;color:#2563eb;margin-bottom:10px;">💰 포인트 설정</div>
+            <div style="font-size:.78rem;font-weight:700;color:#004C98;margin-bottom:10px;">💰 포인트 설정</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
               <div>
                 <label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">보유 포인트</label>
@@ -731,7 +675,7 @@
             </div>
           </div>
           <div style="display:flex;gap:8px;">
-            <button type="button" id="pointRegSaveBtn" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
+            <button type="button" id="pointRegSaveBtn" style="flex:1;padding:10px;background:#004C98;color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
               <i class="fa-solid fa-floppy-disk"></i> 저장
             </button>
             <button type="button" id="pointRegModalCancel" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
@@ -840,10 +784,50 @@
 <div id="toastContainer"></div>
 
 <footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-logo"><div class="logo-mark sm">G</div><span>총무포털</span></div>
-    <div class="footer-info"><span>총무팀</span><span>내선 1234</span><span>gm@company.co.kr</span></div>
-    <div class="footer-copy">&copy; 2026 Company Corp.</div>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <img src="images/teczen-logo.png" alt="TECZEN"/>
+      <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+      <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다. 근무복, 체육복, 복지포인트, 휴양소 예약까지 — 필요한 사내 서비스를 한 곳에서 빠르게 이용하세요.</p>
+    </div>
+    <div class="footer-quick">
+      <div class="footer-col-title">빠른 메뉴</div>
+      <div class="footer-links">
+        <a href="uniform.html"><i class="fa-solid fa-angle-right"></i> 근무복 신청</a>
+        <a href="sports.html"><i class="fa-solid fa-angle-right"></i> 체육복 신청</a>
+        <a href="welfare.html"><i class="fa-solid fa-angle-right"></i> 복지포인트</a>
+        <a href="resort.html"><i class="fa-solid fa-angle-right"></i> 휴양소 예약</a>
+        <a href="admin.html"><i class="fa-solid fa-angle-right"></i> 관리자</a>
+      </div>
+    </div>
+    <div class="footer-contact-col">
+      <div class="footer-col-title">CONTACT</div>
+      <div class="footer-contact">
+        <div class="footer-contact-item">
+          <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-icon"><i class="fa-solid fa-phone"></i></div>
+          <div><div class="footer-contact-label">Tel</div><div class="footer-contact-value">055-000-0000 (내선 1234)</div></div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div><div class="footer-contact-label">Address</div><div class="footer-contact-value">경남 창원시 성산구 성주로 121</div></div>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-icon"><i class="fa-solid fa-clock"></i></div>
+          <div><div class="footer-contact-label">Hours</div><div class="footer-contact-value">평일 09:00 ~ 18:00</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+    <div class="footer-policy">
+      <a href="#">개인정보처리방침</a>
+      <a href="#">이용약관</a>
+    </div>
   </div>
 </footer>
 
@@ -946,7 +930,7 @@ async function loadMyRequests(empId) {
     return '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.04)">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
         '<div style="display:flex;align-items:center;gap:10px">' +
-          '<div style="width:40px;height:40px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#2563eb"><i class="fa-solid fa-gift"></i></div>' +
+          '<div style="width:40px;height:40px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#004C98"><i class="fa-solid fa-gift"></i></div>' +
           '<div><div style="font-weight:800;font-size:.95rem">' + (CNAMES[r.card_type] || r.card_type) + ' 상품권</div><div style="font-size:.78rem;color:#94a3b8;margin-top:2px">' + dt + '</div></div>' +
         '</div>' +
         '<span style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:100px;background:' + sb + ';color:' + sc + '">' + r.status + '</span>' +
