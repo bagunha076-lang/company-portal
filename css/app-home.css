@@ -1,0 +1,59 @@
+/* ============================================================
+   app-home.css — PWA 앱 메뉴 화면 (모아)
+   ============================================================ */
+html, body.app-home-body {
+  height: 100%;
+  background: linear-gradient(180deg, #EFF6FF 0%, #F9FAFB 55%, #FFFFFF 100%);
+}
+.app-home-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: calc(env(safe-area-inset-top, 0px) + 28px) 20px calc(env(safe-area-inset-bottom, 0px) + 90px);
+}
+
+.app-home-wrap { max-width: 480px; width: 100%; margin: 0 auto; flex: 1; }
+
+/* ── 프로필 헤더 ── */
+.ah-profile { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 36px; }
+.ah-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--navy); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; margin-bottom: 14px;
+  box-shadow: 0 8px 24px rgba(0,76,152,.25);
+}
+.ah-name { font-size: 1.15rem; font-weight: 800; color: var(--gray-900); margin-bottom: 4px; }
+.ah-meta { font-size: .85rem; color: var(--gray-600); display: flex; align-items: center; gap: 8px; }
+.ah-dot { color: var(--gray-400); }
+
+/* ── 메뉴 그리드 ── */
+.ah-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.ah-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 22px 10px;
+  background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform .15s, box-shadow .15s, border-color .15s;
+}
+.ah-tile:active, .ah-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--navy-soft); }
+.ah-tile-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: var(--navy-soft); color: var(--navy);
+  display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+}
+.ah-tile span { font-size: .82rem; font-weight: 700; color: var(--gray-800); text-align: center; line-height: 1.3; }
+
+/* ── 하단 로그아웃 바 ── */
+.ah-logout {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  padding: 16px 20px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background: var(--navy); color: #fff;
+  border: none; font-family: var(--font); font-size: .95rem; font-weight: 700;
+  cursor: pointer;
+}
+.ah-logout:hover { background: var(--navy-d); }
+
+@media (max-width: 380px) {
+  .ah-grid { grid-template-columns: repeat(2, 1fr); }
+}

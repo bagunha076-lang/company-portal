@@ -20,6 +20,7 @@ export default defineConfig({
         clothing:resolve(__dirname, 'clothing.html'),
         login:   resolve(__dirname, 'login.html'),
         register:resolve(__dirname, 'register.html'),
+        appHome: resolve(__dirname, 'app-home.html'),
       }
     }
   }

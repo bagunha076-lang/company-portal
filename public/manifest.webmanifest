@@ -2,7 +2,7 @@
   "name": "모아 - 테크젠 총무포털",
   "short_name": "모아",
   "description": "테크젠 임직원을 위한 통합 총무 서비스 포털 — 근무복, 체육복, 복지포인트, 휴양소 예약",
-  "start_url": "index.html",
+  "start_url": "app-home.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",

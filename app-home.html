@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <link rel="manifest" href="manifest.webmanifest"/>
+  <meta name="theme-color" content="#004C98"/>
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png"/>
+  <title>모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/app-home.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body class="app-home-body">
+
+  <div class="app-home-wrap">
+
+    <!-- 프로필 헤더 -->
+    <div class="ah-profile">
+      <div class="ah-avatar"><i class="fa-solid fa-circle-user"></i></div>
+      <div class="ah-name" id="ahName">로딩중...</div>
+      <div class="ah-meta"><span id="ahEmpId">-</span><span class="ah-dot">|</span><span id="ahDept">-</span></div>
+    </div>
+
+    <!-- 메뉴 그리드 -->
+    <div class="ah-grid">
+      <a class="ah-tile" href="index.html">
+        <div class="ah-tile-icon"><i class="fa-solid fa-house"></i></div>
+        <span>메인 홈</span>
+      </a>
+      <a class="ah-tile" href="uniform.html">
+        <div class="ah-tile-icon"><i class="fa-solid fa-shirt"></i></div>
+        <span>근무복 신청</span>
+      </a>
+      <a class="ah-tile" href="sports.html">
+        <div class="ah-tile-icon"><i class="fa-solid fa-person-running"></i></div>
+        <span>체육복 신청</span>
+      </a>
+      <a class="ah-tile" href="welfare.html">
+        <div class="ah-tile-icon"><i class="fa-solid fa-coins"></i></div>
+        <span>복지포인트</span>
+      </a>
+      <a class="ah-tile" href="resort.html">
+        <div class="ah-tile-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+        <span>휴양소 예약</span>
+      </a>
+      <a class="ah-tile" href="admin.html">
+        <div class="ah-tile-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <span>관리자</span>
+      </a>
+    </div>
+
+  </div>
+
+  <button class="ah-logout" id="ahLogoutBtn">로그아웃</button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      var profileData = await initHeader();
+      if (!profileData) return;
+      var profile = profileData.profile;
+      document.getElementById('ahName').textContent = profileData.empName;
+      document.getElementById('ahEmpId').textContent = (profile && profile.emp_id) || '-';
+      document.getElementById('ahDept').textContent  = (profile && profile.dept_name) || '-';
+    });
+    document.getElementById('ahLogoutBtn').addEventListener('click', function () {
+      if (confirm('로그아웃 하시겠습니까?')) signOut();
+    });
+  </script>
+
+</body>
+</html>
