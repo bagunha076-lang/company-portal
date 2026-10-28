@@ -229,19 +229,19 @@
               <div class="form-row">
                 <div class="form-group">
                   <label>사번</label>
-                  <input type="text" value="2019-0842" readonly class="input-readonly"/>
+                  <input type="text" id="profEmpId" value="-" readonly class="input-readonly"/>
                 </div>
                 <div class="form-group">
                   <label>성명</label>
-                  <input type="text" value="홍길동" readonly class="input-readonly"/>
+                  <input type="text" id="profEmpName" value="-" readonly class="input-readonly"/>
                 </div>
                 <div class="form-group">
                   <label>부서</label>
-                  <input type="text" value="총무팀" readonly class="input-readonly"/>
+                  <input type="text" id="profDeptName" value="-" readonly class="input-readonly"/>
                 </div>
                 <div class="form-group">
                   <label>연락처 <span class="req">*</span></label>
-                  <input type="tel" placeholder="010-0000-0000" required/>
+                  <input type="tel" name="phone" placeholder="010-0000-0000" required/>
                 </div>
               </div>
             </div>
@@ -333,7 +333,7 @@
       <!-- ===== 나의 예약 ===== -->
       <div class="tab-panel" id="tab-resort-history">
         <div class="status-table-wrap">
-          <table class="status-table">
+          <table class="status-table" id="resortHistoryTable">
             <thead>
               <tr>
                 <th>예약번호</th>
@@ -347,26 +347,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>R-2026-0042</td>
-                <td>강원 속초 해변 휴양소</td>
-                <td>2026.08.14</td>
-                <td>2026.08.16</td>
-                <td>4명</td>
-                <td>2026.07.20</td>
-                <td><span class="status-chip chip-pending">검토중</span></td>
-                <td><button class="btn-table-cancel">취소</button></td>
-              </tr>
-              <tr>
-                <td>R-2025-0118</td>
-                <td>제주 서귀포 휴양소</td>
-                <td>2025.12.26</td>
-                <td>2025.12.29</td>
-                <td>3명</td>
-                <td>2025.11.10</td>
-                <td><span class="status-chip chip-done">이용완료</span></td>
-                <td><button class="btn-table-review">후기작성</button></td>
-              </tr>
+              <tr><td colspan="8" style="text-align:center;color:var(--gray-400);">예약 내역이 없습니다.</td></tr>
             </tbody>
           </table>
         </div>

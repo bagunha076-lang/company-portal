@@ -174,13 +174,6 @@ uniformForm && uniformForm.addEventListener('submit', function(e) {
   if (!winterPantsSize || !winterPantsSize.value) errors.push('동계 하의 사이즈를 선택해 주세요.');
   if (!winterInnerSize || !winterInnerSize.value) errors.push('동계 작업복 사이즈를 선택해 주세요.');
 
-  var shoeSize = this.elements['shoe_size'];
-  var shoeType = this.elements['shoe_type'];
-  var hasShoeSize = shoeSize && shoeSize.value;
-  var hasShoeType = shoeType && shoeType.value;
-  if (hasShoeSize && !hasShoeType) errors.push('안전화 종류를 선택해 주세요.');
-  if (!hasShoeSize && hasShoeType) errors.push('안전화 사이즈를 선택해 주세요.');
-
   if (errors.length > 0) {
     showValidationError(errors);
     return;
@@ -205,34 +198,103 @@ function showValidationError(errors) {
   box.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function submitUniformForm(form) {
+async function submitUniformForm(form) {
   var old = document.getElementById('validationErrorBox');
   if (old) old.remove();
 
-  /* 실제 API 연동 시 여기에 fetch/supabase 로직 추가 */
-  /*
-  var data = {
+  var user = await getCurrentUser();
+  if (!user) { alert('로그인이 필요합니다.'); return; }
+
+  var payload = {
+    user_id: user.id,
+    emp_id: CURRENT_PROFILE ? CURRENT_PROFILE.emp_id : null,
+    emp_name: CURRENT_PROFILE ? CURRENT_PROFILE.emp_name : null,
+    dept_name: CURRENT_PROFILE ? CURRENT_PROFILE.dept_name : null,
     summer_top: form.elements['summer_top'].value,
     summer_bottom: form.elements['summer_bottom'].value,
+    summer_color: form.elements['summer_color'].value,
+    summer_qty: parseInt(form.elements['summer_qty'].value, 10) || 1,
     winter_outer_type: form.elements['winter_outer_type'].value,
     winter_outer_size: form.elements['winter_outer_size'].value,
     winter_pants_size: form.elements['winter_pants_size'].value,
     winter_inner_type: form.elements['winter_inner_type'].value,
     winter_inner_size: form.elements['winter_inner_size'].value,
-    extra_gyeopjeompeo: form.elements['extra_gyeopjeompeo'].value,
-    extra_hotjeompeo:   form.elements['extra_hotjeompeo'].value,
-    extra_pants:        form.elements['extra_pants'].value,
-    extra_tshirt:       form.elements['extra_tshirt'].value,
-    extra_vest:         form.elements['extra_vest'].value,
-    shoe_size: form.elements['shoe_size'].value,
-    shoe_type: form.elements['shoe_type'].value,
-    phone:     form.elements['phone'].value,
-    remark:    form.elements['remark'].value,
+    extra_gyeopjeompeo: parseInt(form.elements['extra_gyeopjeompeo'].value, 10) || 0,
+    extra_hotjeompeo:   parseInt(form.elements['extra_hotjeompeo'].value, 10) || 0,
+    extra_pants:        parseInt(form.elements['extra_pants'].value, 10) || 0,
+    extra_tshirt:       parseInt(form.elements['extra_tshirt'].value, 10) || 0,
+    extra_vest:         parseInt(form.elements['extra_vest'].value, 10) || 0,
+    phone:  form.elements['phone'].value,
+    remark: form.elements['remark'].value
   };
-  */
+
+  var res = await supabaseClient.from('uniform_requests').insert(payload);
+  if (res.error) {
+    alert('신청 중 오류가 발생했습니다: ' + res.error.message);
+    return;
+  }
 
   openModal('successModal');
+  loadUniformHistory();
 }
+
+/* ============================================================
+   신청자 프로필 로드 + 신청 이력 조회
+============================================================ */
+var CURRENT_PROFILE = null;
+
+async function initUniformProfile() {
+  var user = await getCurrentUser();
+  if (!user) return;
+  var profile = await getUserProfile(user.id);
+  CURRENT_PROFILE = profile;
+
+  var idEl   = document.getElementById('profEmpId');
+  var nameEl = document.getElementById('profEmpName');
+  var deptEl = document.getElementById('profDeptName');
+  if (idEl)   idEl.value   = (profile && profile.emp_id)   || user.email;
+  if (nameEl) nameEl.value = (profile && profile.emp_name) || user.email;
+  if (deptEl) deptEl.value = (profile && profile.dept_name)|| '-';
+
+  loadUniformHistory();
+}
+
+async function loadUniformHistory() {
+  var tbody = document.querySelector('#historyTable tbody');
+  if (!tbody) return;
+  var user = await getCurrentUser();
+  if (!user) return;
+
+  var res = await supabaseClient
+    .from('uniform_requests')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (res.error || !res.data || !res.data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--gray-400);">신청 내역이 없습니다.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = res.data.map(function (row) {
+    var dateStr = new Date(row.created_at).toLocaleDateString('ko-KR').replace(/\s/g, '');
+    var extras = ['extra_gyeopjeompeo', 'extra_hotjeompeo', 'extra_pants', 'extra_tshirt', 'extra_vest']
+      .map(function (k) { return row[k] || 0; })
+      .reduce(function (a, b) { return a + b; }, 0);
+    var statusClass = row.status === '반려' ? 'chip-reject' : (row.status === '처리완료' ? 'chip-done' : 'chip-pending');
+    return '<tr>' +
+      '<td>' + dateStr + '</td>' +
+      '<td>' + row.summer_top + ' / ' + row.summer_bottom + '</td>' +
+      '<td>' + row.winter_outer_type + ' ' + row.winter_outer_size + '</td>' +
+      '<td>' + row.winter_pants_size + '</td>' +
+      '<td>' + row.winter_inner_type + ' ' + row.winter_inner_size + '</td>' +
+      '<td>' + extras + '건</td>' +
+      '<td><span class="chip ' + statusClass + '">' + (row.status || '접수완료') + '</span></td>' +
+      '</tr>';
+  }).join('');
+}
+
+initUniformProfile();
 
 document.getElementById('successClose') &&
   document.getElementById('successClose').addEventListener('click', function() {

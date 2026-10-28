@@ -172,15 +172,15 @@
                   <div class="form-row">
                     <div class="form-group">
                       <label>사번</label>
-                      <input type="text" value="2019-0842" readonly class="input-readonly"/>
+                      <input type="text" id="profEmpId" value="-" readonly class="input-readonly"/>
                     </div>
                     <div class="form-group">
                       <label>성명</label>
-                      <input type="text" value="홍길동" readonly class="input-readonly"/>
+                      <input type="text" id="profEmpName" value="-" readonly class="input-readonly"/>
                     </div>
                     <div class="form-group">
                       <label>부서</label>
-                      <input type="text" value="총무팀" readonly class="input-readonly"/>
+                      <input type="text" id="profDeptName" value="-" readonly class="input-readonly"/>
                     </div>
                     <div class="form-group">
                       <label>연락처 <span class="req">*</span></label>
@@ -394,15 +394,12 @@
           <table class="data-table" id="historyTable">
             <thead>
               <tr>
-                <th>연도</th><th>하복 상의</th><th>하복 하의</th>
-                <th>동복 상의</th><th>동복 하의</th><th>재킷</th>
-                <th>안전화</th><th>신청일</th><th>처리상태</th>
+                <th>신청일</th><th>하복(상의/하의)</th><th>동계 외투</th>
+                <th>동계 하의</th><th>동계 이너</th><th>추가신청</th><th>상태</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>2026</td><td>L</td><td>32</td><td>L</td><td>32</td><td>L</td><td>-</td><td>2026.07.10</td><td><span class="chip chip-done">처리완료</span></td></tr>
-              <tr><td>2025</td><td>M</td><td>30</td><td>L</td><td>32</td><td>L</td><td>250/단화</td><td>2025.07.12</td><td><span class="chip chip-done">처리완료</span></td></tr>
-              <tr><td>2024</td><td>M</td><td>30</td><td>M</td><td>30</td><td>M</td><td>-</td><td>2024.07.08</td><td><span class="chip chip-done">처리완료</span></td></tr>
+              <tr><td colspan="7" style="text-align:center;color:var(--gray-400);">신청 내역이 없습니다.</td></tr>
             </tbody>
           </table>
         </div>

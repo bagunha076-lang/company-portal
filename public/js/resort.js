@@ -149,16 +149,89 @@ if (checkinInput)  checkinInput.min  = today;
 if (checkoutInput) checkoutInput.min = today;
 
 // =====================
+// 신청자 프로필 로드
+// =====================
+let CURRENT_PROFILE = null;
+
+async function initResortProfile() {
+  const user = await getCurrentUser();
+  if (!user) return;
+  const profile = await getUserProfile(user.id);
+  CURRENT_PROFILE = profile;
+
+  const idEl   = document.getElementById('profEmpId');
+  const nameEl = document.getElementById('profEmpName');
+  const deptEl = document.getElementById('profDeptName');
+  if (idEl)   idEl.value   = (profile && profile.emp_id)   || user.email;
+  if (nameEl) nameEl.value = (profile && profile.emp_name) || user.email;
+  if (deptEl) deptEl.value = (profile && profile.dept_name)|| '-';
+
+  loadResortHistory();
+}
+initResortProfile();
+
+// =====================
 // 예약 폼 제출
 // =====================
 const resortForm         = document.getElementById('resortForm');
 const resortSuccessModal = document.getElementById('resortSuccessModal');
 const resortSuccessClose = document.getElementById('resortSuccessClose');
 
+function collectCompanions() {
+  const rows = document.querySelectorAll('#companionList .companion-row');
+  const companions = [];
+  rows.forEach(row => {
+    const name  = row.querySelector('.comp-name').value.trim();
+    const rel   = row.querySelector('.comp-rel').value.trim();
+    const birth = row.querySelector('.comp-birth').value.trim();
+    if (name) companions.push({ name, relation: rel, birth });
+  });
+  return companions;
+}
+
 if (resortForm) {
-  resortForm.addEventListener('submit', e => {
+  resortForm.addEventListener('submit', async e => {
     e.preventDefault();
+
+    const resort   = resortForm.elements['resort'].value;
+    const checkin  = resortForm.elements['checkin'].value;
+    const checkout = resortForm.elements['checkout'].value;
+    const guests   = resortForm.elements['guests'].value;
+    const phone    = resortForm.elements['phone'].value;
+
+    if (!resort)   { alert('휴양소를 선택해주세요.'); return; }
+    if (!checkin || !checkout) { alert('입실일/퇴실일을 입력해주세요.'); return; }
+    if (new Date(checkout) <= new Date(checkin)) { alert('퇴실일은 입실일보다 이후여야 합니다.'); return; }
+    if (!guests)   { alert('이용 인원을 선택해주세요.'); return; }
+    if (!phone)    { alert('연락처를 입력해주세요.'); return; }
+
+    const user = await getCurrentUser();
+    if (!user) { alert('로그인이 필요합니다.'); return; }
+
+    const payload = {
+      user_id: user.id,
+      emp_id: CURRENT_PROFILE ? CURRENT_PROFILE.emp_id : null,
+      emp_name: CURRENT_PROFILE ? CURRENT_PROFILE.emp_name : null,
+      dept_name: CURRENT_PROFILE ? CURRENT_PROFILE.dept_name : null,
+      phone,
+      resort_name: resort,
+      checkin_date: checkin,
+      checkout_date: checkout,
+      guest_label: guests,
+      adult_count: parseInt(resortForm.elements['adult'].value, 10) || 0,
+      child_count: parseInt(resortForm.elements['child'].value, 10) || 0,
+      companions: collectCompanions(),
+      request_note: resortForm.elements['request'].value
+    };
+
+    const res = await supabaseClient.from('resort_reservations').insert(payload);
+    if (res.error) {
+      alert('예약 신청 중 오류가 발생했습니다: ' + res.error.message);
+      return;
+    }
+
     resortSuccessModal.classList.add('active');
+    loadResortHistory();
   });
 }
 
@@ -176,14 +249,54 @@ resortSuccessModal && resortSuccessModal.addEventListener('click', e => {
 });
 
 // =====================
-// 나의 예약 - 취소 버튼
+// 나의 예약 - 실데이터 조회 + 취소
 // =====================
-document.querySelectorAll('.btn-table-cancel').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (confirm('예약을 취소하시겠습니까?')) {
-      btn.closest('tr').querySelector('.status-chip').textContent = '취소됨';
-      btn.closest('tr').querySelector('.status-chip').className = 'status-chip chip-reject';
-      btn.remove();
-    }
+const RESORT_STATUS_CLASS = { '검토중': 'chip-pending', '승인': 'chip-done', '이용완료': 'chip-done', '취소': 'chip-reject', '반려': 'chip-reject' };
+
+async function loadResortHistory() {
+  const tbody = document.querySelector('#resortHistoryTable tbody');
+  if (!tbody) return;
+  const user = await getCurrentUser();
+  if (!user) return;
+
+  const res = await supabaseClient
+    .from('resort_reservations')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  if (res.error || !res.data || !res.data.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--gray-400);">예약 내역이 없습니다.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = res.data.map(row => {
+    const reserveNo = 'R-' + row.id.slice(0, 8).toUpperCase();
+    const createdStr = new Date(row.created_at).toLocaleDateString('ko-KR');
+    const statusClass = RESORT_STATUS_CLASS[row.status] || 'chip-pending';
+    const canCancel = row.status === '검토중' || row.status === '승인';
+    const actionCell = canCancel
+      ? `<button class="btn-table-cancel" data-id="${row.id}">취소</button>`
+      : '-';
+    return `<tr>
+      <td>${reserveNo}</td>
+      <td>${row.resort_name}</td>
+      <td>${row.checkin_date}</td>
+      <td>${row.checkout_date}</td>
+      <td>${row.guest_label}</td>
+      <td>${createdStr}</td>
+      <td><span class="status-chip ${statusClass}">${row.status}</span></td>
+      <td>${actionCell}</td>
+    </tr>`;
+  }).join('');
+
+  tbody.querySelectorAll('.btn-table-cancel').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('예약을 취소하시겠습니까?')) return;
+      const id = btn.dataset.id;
+      const res = await supabaseClient.from('resort_reservations').update({ status: '취소' }).eq('id', id);
+      if (res.error) { alert('취소 중 오류가 발생했습니다: ' + res.error.message); return; }
+      loadResortHistory();
+    });
   });
-});
+}
