@@ -1,0 +1,75 @@
+/* ============================================================
+   hr-common.css — HR 메뉴 공용 컴포넌트 (모아 네이비)
+   uniform.css의 status-board/calendar-timeline/progress-bar를
+   복사해 공용화 + 설문형 rate-scale 컴포넌트 신규 추가
+   ============================================================ */
+
+/* ── 간단 히어로 (사진 없음, HR 메뉴 공용) ── */
+.sub-hero.hr-light {
+  min-height: 180px;
+  padding: calc(var(--header-h) + 36px) 0 32px;
+  background: linear-gradient(135deg, var(--navy-soft) 0%, #fff 70%);
+}
+.sub-hero.hr-light .sub-hero-inner h1 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.sub-hero.hr-light .sub-hero-inner p { font-size: .92rem; }
+
+/* ── 신청 현황판 (캘린더 타임라인 + 진행률) ── */
+.status-board {
+  background: #fff; border: 1px solid var(--gray-200); border-radius: 20px;
+  padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 4px 24px rgba(0,0,0,.05);
+}
+.status-board-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.status-board-title { font-size: 1.02rem; font-weight: 800; color: var(--gray-900); display: flex; align-items: center; gap: 10px; }
+.status-board-title i { color: var(--navy); }
+
+.calendar-timeline { margin-bottom: 30px; padding: 0 6px; }
+.ct-track { position: relative; height: 4px; background: var(--gray-200); border-radius: 4px; margin: 0 4% 14px; }
+.ct-progress { position: absolute; top: 0; left: 0; height: 100%; background: linear-gradient(90deg, var(--navy), #0066C6); border-radius: 4px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+.ct-points { display: flex; justify-content: space-between; }
+.ct-point { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; position: relative; }
+.ct-dot { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--gray-200); transition: all .3s; }
+.ct-point.done .ct-dot   { border-color: var(--green-d); background: var(--green-d); }
+.ct-point.active .ct-dot { border-color: var(--navy); background: var(--navy); box-shadow: 0 0 0 5px rgba(0,76,152,.15); }
+.ct-label { font-size: .76rem; color: var(--gray-400); text-align: center; line-height: 1.5; }
+.ct-label strong { display: block; font-size: .85rem; color: var(--gray-800); margin-top: 1px; }
+.ct-point.done .ct-label strong   { color: var(--green-d); }
+.ct-point.active .ct-label strong { color: var(--navy); }
+
+.progress-overall { margin-bottom: 22px; }
+.progress-overall-label { display: flex; justify-content: space-between; align-items: baseline; font-size: .85rem; color: var(--gray-600); margin-bottom: 8px; font-weight: 600; }
+.progress-overall-label strong { font-size: 1.1rem; color: var(--navy); }
+.progress-bar-track { height: 10px; background: var(--gray-100); border-radius: 10px; overflow: hidden; }
+.progress-bar-track.sm { height: 6px; }
+.progress-bar-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--navy), #0066C6); transition: width 1.2s cubic-bezier(.4,0,.2,1); width: 0%; }
+
+.item-status-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; padding-top: 18px; border-top: 1px dashed var(--gray-200); }
+.item-status-head { display: flex; justify-content: space-between; align-items: baseline; font-size: .78rem; font-weight: 700; color: var(--gray-700, #334155); margin-bottom: 7px; }
+.item-status-head span:last-child { font-size: .74rem; font-weight: 600; color: var(--gray-400); }
+
+/* ── 설문형 평가 스케일 (iNSIGHT / 다면진단 / 동료진단) ── */
+.survey-question { margin-bottom: 26px; padding-bottom: 26px; border-bottom: 1px dashed var(--gray-200); }
+.survey-question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.survey-q-num { display: inline-block; font-size: .72rem; font-weight: 800; color: var(--navy); background: var(--navy-soft); padding: 2px 10px; border-radius: 100px; margin-bottom: 10px; }
+.survey-q-text { font-size: .95rem; font-weight: 700; color: var(--gray-800); margin-bottom: 16px; line-height: 1.5; }
+.rate-scale { display: flex; gap: 10px; flex-wrap: wrap; }
+.rate-option { cursor: pointer; }
+.rate-option input[type="radio"] { display: none; }
+.rate-option span {
+  width: 46px; height: 46px; border-radius: 50%;
+  border: 2px solid var(--gray-200); display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .95rem; color: var(--gray-600); background: #fff; transition: all .15s;
+}
+.rate-option:hover span { border-color: var(--navy); color: var(--navy); }
+.rate-option input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+.rate-scale-labels { display: flex; justify-content: space-between; max-width: 290px; font-size: .72rem; color: var(--gray-400); margin-top: 8px; }
+
+/* ── 반응형 ── */
+@media (max-width: 900px) {
+  .ct-label { font-size: .68rem; }
+  .ct-label strong { font-size: .76rem; }
+  .item-status-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .status-board { padding: 20px; }
+  .rate-option span { width: 40px; height: 40px; font-size: .88rem; }
+}
