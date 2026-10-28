@@ -3,6 +3,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   root: '.',
+  base: '/company-portal/',
   server: {
     port: 3000,
     open: '/index.html'
