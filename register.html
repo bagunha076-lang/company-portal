@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- <head> 안에 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth.js"></script>
+
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>회원가입 - 총무포털</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-serif;
+      background: linear-gradient(135deg, #FFFDF2 0%, #FFF9D6 55%, #FFFFFF 100%);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .wrap { width: 100%; max-width: 440px; }
+    .logo { text-align: center; margin-bottom: 32px; }
+    .logo-mark {
+      width: 64px; height: 64px; background: #FEE500; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 900; color: #111;
+      margin: 0 auto 14px; box-shadow: 0 8px 28px rgba(254,229,0,0.4);
+    }
+    .logo-name { font-size: 1.3rem; font-weight: 800; color: #0f172a; }
+    .logo-sub  { font-size: .85rem; color: #64748b; margin-top: 4px; }
+    .card {
+      background: #fff; border-radius: 24px; padding: 40px 36px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    .card-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+    .card-desc  { font-size: .88rem; color: #64748b; margin-bottom: 18px; line-height: 1.6; }
+    .notice {
+      background: #FFF9D6; border: 1px solid #F0D800; border-radius: 10px;
+      padding: 12px 16px; font-size: .82rem; color: #5c5000;
+      margin-bottom: 22px; line-height: 1.7;
+    }
+    .alert {
+      display: none; align-items: center; gap: 8px;
+      padding: 12px 16px; border-radius: 10px;
+      font-size: .85rem; margin-bottom: 20px;
+    }
+    .alert.show { display: flex; }
+    .alert.err  { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+    .alert.suc  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block; font-size: .82rem; font-weight: 700;
+      color: #374151; margin-bottom: 7px;
+    }
+    .req { color: #ef4444; }
+    .input-wrap { position: relative; }
+    .input-wrap .ico {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: #94a3b8;
+    }
+    .inp {
+      width: 100%; padding: 13px 44px 13px 42px;
+      border: 1.5px solid #e2e8f0; border-radius: 12px;
+      font-size: .95rem; font-family: inherit; color: #0f172a;
+      outline: none; transition: border-color .2s, box-shadow .2s;
+    }
+    .inp:focus { border-color: #F0D800; box-shadow: 0 0 0 3px rgba(254,229,0,0.25); }
+    .inp.error  { border-color: #ef4444; }
+    .inp.ok     { border-color: #16a34a; }
+    .eye {
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: #94a3b8; padding: 4px;
+    }
+    .err-msg  { font-size: .78rem; color: #ef4444; margin-top: 5px; display: none; }
+    .ok-msg   { font-size: .78rem; color: #16a34a; margin-top: 5px; display: none; align-items: center; gap: 4px; }
+    .ok-msg.show { display: flex; }
+    /* 비밀번호 강도 */
+    .pw-bar  { height: 4px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .pw-fill { height: 100%; border-radius: 4px; transition: all .3s; width: 0; }
+    .pw-txt  { font-size: .72rem; margin-top: 4px; font-weight: 600; }
+    /* 버튼 */
+    .btn-submit {
+      width: 100%; padding: 14px;
+      background: #FEE500;
+      color: #111111; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 800; font-family: inherit;
+      cursor: pointer; transition: all .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-submit:hover    { transform: translateY(-2px); background: #F0D800; box-shadow: 0 8px 24px rgba(254,229,0,0.45); }
+    .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+    .spin {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(17,17,17,0.25); border-top-color: #111111;
+      border-radius: 50%; animation: spin .7s linear infinite; display: none;
+    }
+    .btn-submit.loading .spin     { display: block; }
+    .btn-submit.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .footer-link { text-align: center; font-size: .88rem; color: #64748b; margin-top: 22px; }
+    .footer-link a { color: #111111; font-weight: 800; text-decoration: none; }
+    .footer-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <div class="logo">
+      <div class="logo-mark">G</div>
+      <div class="logo-name">총무포털</div>
+      <div class="logo-sub">임직원 복지 통합 관리 시스템</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">회원가입</div>
+      <div class="card-desc">임직원 정보를 입력하여 계정을 만들어 주세요.</div>
+
+      <div class="notice">
+        <i class="fa-solid fa-circle-info"></i>
+        <strong>사번은 인사팀에서 부여된 번호</strong>를 입력해 주세요.<br/>
+        포인트 조회는 총무팀 데이터 업로드 후 가능합니다.
+      </div>
+
+      <div class="alert" id="alertBox">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMsg"></span>
+      </div>
+
+      <form id="regForm" novalidate>
+
+        <!-- 사번 -->
+        <div class="field">
+          <label>사번 <span class="req">*</span></label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-id-card ico"></i>
+            <input type="text" class="inp" id="empId"
+              placeholder="예: 82210629" maxlength="20">
+          </div>
+          <div class="err-msg" id="empIdErr">사번을 입력해 주세요.</div>
+        </div>
+
+        <!-- 성명 -->
+        <div class="field">
+          <label>성명 <span class="req">*</span></label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-user ico"></i>
+            <input type="text" class="inp" id="empName"
+              placeholder="성명을 입력하세요" maxlength="20">
+          </div>
+          <div class="err-msg" id="empNameErr">성명을 입력해 주세요.</div>
+        </div>
+
+        <!-- 비밀번호 -->
+        <div class="field">
+          <label>비밀번호 <span class="req">*</span></label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock ico"></i>
+            <input type="password" class="inp" id="pw"
+              placeholder="8자 이상 영문+숫자 조합">
+            <button type="button" class="eye" id="eyeBtn1">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <div class="pw-bar"><div class="pw-fill" id="pwFill"></div></div>
+          <div class="pw-txt" id="pwTxt"></div>
+          <div class="err-msg" id="pwErr">비밀번호는 8자 이상이어야 합니다.</div>
+        </div>
+
+        <!-- 비밀번호 확인 -->
+        <div class="field">
+          <label>비밀번호 확인 <span class="req">*</span></label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock ico"></i>
+            <input type="password" class="inp" id="pw2"
+              placeholder="비밀번호를 다시 입력하세요">
+            <button type="button" class="eye" id="eyeBtn2">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <div class="err-msg" id="pw2Err">비밀번호가 일치하지 않습니다.</div>
+          <div class="ok-msg" id="pwMatchOk">
+            <i class="fa-solid fa-check-circle"></i> 비밀번호가 일치합니다!
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <div class="spin"></div>
+          <span class="btn-text">
+            <i class="fa-solid fa-user-plus"></i> 회원가입
+          </span>
+        </button>
+
+      </form>
+
+      <div class="footer-link">
+        이미 계정이 있으신가요? <a href="login.html">로그인</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    var sb = supabase.createClient(
+      'https://gnvruxqlyedlsjuwodsd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudnJ1eHFseWVkbHNqdXdvZHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NTk0MjgsImV4cCI6MjEwMDQzNTQyOH0.ugQNMmHl2E5r86rRvPoqLejz7O-0In7QH9T6xL8RhyM'
+    );
+
+    /* 이미 로그인 → 메인으로 */
+    sb.auth.getSession().then(function(res) {
+      if (res.data && res.data.session) window.location.href = 'index.html';
+    });
+
+    /* 눈 토글 */
+    function eyeToggle(btnId, inputId) {
+      document.getElementById(btnId).addEventListener('click', function() {
+        var inp = document.getElementById(inputId);
+        var ico = this.querySelector('i');
+        inp.type = inp.type === 'password' ? 'text' : 'password';
+        ico.className = inp.type === 'text' ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+      });
+    }
+    eyeToggle('eyeBtn1', 'pw');
+    eyeToggle('eyeBtn2', 'pw2');
+
+    /* 비밀번호 강도 */
+    document.getElementById('pw').addEventListener('input', function() {
+      var v    = this.value;
+      var fill = document.getElementById('pwFill');
+      var txt  = document.getElementById('pwTxt');
+      if (!v) { fill.style.width = '0'; txt.textContent = ''; return; }
+      var score = 0;
+      if (v.length >= 8)          score++;
+      if (/[A-Za-z]/.test(v))     score++;
+      if (/[0-9]/.test(v))        score++;
+      if (/[^A-Za-z0-9]/.test(v)) score++;
+      if (score <= 2) {
+        fill.style.cssText = 'width:33%;background:#ef4444';
+        txt.style.color = '#ef4444'; txt.textContent = '약함 — 영문+숫자 조합 권장';
+      } else if (score === 3) {
+        fill.style.cssText = 'width:66%;background:#f59e0b';
+        txt.style.color = '#f59e0b'; txt.textContent = '보통 — 특수문자 추가 권장';
+      } else {
+        fill.style.cssText = 'width:100%;background:#16a34a';
+        txt.style.color = '#16a34a'; txt.textContent = '강함 ✓';
+      }
+    });
+
+    /* 비밀번호 확인 실시간 */
+    document.getElementById('pw2').addEventListener('input', function() {
+      var matchEl = document.getElementById('pwMatchOk');
+      if (this.value && this.value === document.getElementById('pw').value) {
+        matchEl.classList.add('show');
+        this.classList.add('ok'); this.classList.remove('error');
+      } else {
+        matchEl.classList.remove('show');
+        this.classList.remove('ok');
+      }
+    });
+
+    /* 알림 */
+    function showAlert(msg, type) {
+      var box = document.getElementById('alertBox');
+      var txt = document.getElementById('alertMsg');
+      txt.textContent = msg;
+      box.className = 'alert show ' + (type || 'err');
+    }
+
+    /* 회원가입 폼 */
+    document.getElementById('regForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      var empId   = document.getElementById('empId').value.trim();
+      var empName = document.getElementById('empName').value.trim();
+      var pw      = document.getElementById('pw').value;
+      var pw2     = document.getElementById('pw2').value;
+      var btn     = document.getElementById('submitBtn');
+
+      /* 오류 초기화 */
+      ['empIdErr','empNameErr','pwErr','pw2Err'].forEach(function(id) {
+        document.getElementById(id).style.display = 'none';
+      });
+      ['empId','empName','pw','pw2'].forEach(function(id) {
+        document.getElementById(id).classList.remove('error');
+      });
+      document.getElementById('alertBox').className = 'alert';
+
+      /* 유효성 검사 */
+      var ok = true;
+      if (!empId) {
+        document.getElementById('empIdErr').style.display = 'block';
+        document.getElementById('empId').classList.add('error'); ok = false;
+      }
+      if (!empName) {
+        document.getElementById('empNameErr').style.display = 'block';
+        document.getElementById('empName').classList.add('error'); ok = false;
+      }
+      if (!pw || pw.length < 8) {
+        document.getElementById('pwErr').style.display = 'block';
+        document.getElementById('pw').classList.add('error'); ok = false;
+      }
+      if (pw !== pw2) {
+        document.getElementById('pw2Err').style.display = 'block';
+        document.getElementById('pw2').classList.add('error'); ok = false;
+      }
+      if (!ok) return;
+
+      btn.classList.add('loading'); btn.disabled = true;
+
+      try {
+        var email  = empId + '@company.co.kr';
+        var result = await sb.auth.signUp({
+          email: email, password: pw,
+          options: { data: { emp_id: empId, emp_name: empName } }
+        });
+
+        if (result.error) {
+          var msg = '회원가입 중 오류가 발생했습니다.';
+          if (result.error.message.includes('already registered')) {
+            msg = '이미 가입된 사번입니다. 로그인을 시도해 주세요.';
+          }
+          showAlert(msg, 'err');
+          return;
+        }
+
+        /* user_profiles 저장 */
+        if (result.data && result.data.user) {
+          await sb.from('user_profiles').insert({
+            id       : result.data.user.id,
+            emp_id   : empId,
+            emp_name : empName,
+            role     : 'employee'
+          });
+        }
+
+        showAlert('회원가입 완료! 로그인 페이지로 이동합니다...', 'suc');
+        setTimeout(function() { window.location.href = 'login.html'; }, 1500);
+
+      } catch(err) {
+        showAlert('오류: ' + err.message, 'err');
+      } finally {
+        btn.classList.remove('loading'); btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

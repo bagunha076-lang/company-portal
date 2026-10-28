@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>로그인 - 총무포털</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-serif;
+      background: linear-gradient(135deg, #FFFDF2 0%, #FFF9D6 55%, #FFFFFF 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .wrap { width: 100%; max-width: 440px; }
+
+    /* 로고 */
+    .logo { text-align: center; margin-bottom: 32px; }
+    .logo-mark {
+      width: 64px; height: 64px;
+      background: #FEE500;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; font-weight: 900; color: #111;
+      margin: 0 auto 14px;
+      box-shadow: 0 8px 28px rgba(254,229,0,0.4);
+    }
+    .logo-name { font-size: 1.3rem; font-weight: 800; color: #0f172a; }
+    .logo-sub  { font-size: .85rem; color: #64748b; margin-top: 4px; }
+
+    /* 카드 */
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 40px 36px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    .card-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+    .card-desc  { font-size: .88rem; color: #64748b; margin-bottom: 28px; line-height: 1.6; }
+
+    /* 알림 */
+    .alert {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: .85rem;
+      margin-bottom: 20px;
+    }
+    .alert.show     { display: flex; }
+    .alert.err      { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+    .alert.suc      { background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; }
+
+    /* 필드 */
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: .82rem; font-weight: 700; color: #374151;
+      margin-bottom: 7px;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap .ico {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); color: #94a3b8;
+    }
+    .inp {
+      width: 100%;
+      padding: 13px 44px 13px 42px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: .95rem;
+      font-family: inherit;
+      color: #0f172a;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .inp:focus  { border-color: #F0D800; box-shadow: 0 0 0 3px rgba(254,229,0,0.25); }
+    .inp.error  { border-color: #ef4444; }
+    .eye {
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: #94a3b8; padding: 4px;
+    }
+    .err-msg { font-size: .78rem; color: #ef4444; margin-top: 5px; display: none; }
+
+    /* 버튼 */
+    .btn-submit {
+      width: 100%; padding: 14px;
+      background: #FEE500;
+      color: #111111; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 800; font-family: inherit;
+      cursor: pointer; transition: all .2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-submit:hover    { transform: translateY(-2px); background: #F0D800; box-shadow: 0 8px 24px rgba(254,229,0,0.45); }
+    .btn-submit:disabled { background: #94a3b8; cursor: not-allowed; transform: none; box-shadow: none; }
+    .spin {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(17,17,17,0.25);
+      border-top-color: #111111;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .btn-submit.loading .spin     { display: block; }
+    .btn-submit.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 하단 링크 */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 22px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: #e2e8f0;
+    }
+    .divider span { font-size: .78rem; color: #94a3b8; }
+    .footer-link { text-align: center; font-size: .88rem; color: #64748b; margin-bottom: 12px; }
+    .footer-link a { color: #111111; font-weight: 800; text-decoration: none; }
+    .footer-link a:hover { text-decoration: underline; }
+    .contact { text-align: center; font-size: .8rem; color: #94a3b8; }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <!-- 로고 -->
+    <div class="logo">
+      <div class="logo-mark">G</div>
+      <div class="logo-name">총무포털</div>
+      <div class="logo-sub">임직원 복지 통합 관리 시스템</div>
+    </div>
+
+    <!-- 로그인 카드 -->
+    <div class="card">
+      <div class="card-title">로그인</div>
+      <div class="card-desc">사번과 비밀번호를 입력해 주세요.</div>
+
+      <!-- 알림 -->
+      <div class="alert" id="alertBox">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMsg"></span>
+      </div>
+
+      <form id="loginForm" novalidate>
+
+        <!-- 사번 -->
+        <div class="field">
+          <label for="empId">사번</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-id-card ico"></i>
+            <input type="text" class="inp" id="empId"
+              placeholder="사번을 입력하세요" maxlength="20"
+              autocomplete="username">
+          </div>
+          <div class="err-msg" id="empIdErr">사번을 입력해 주세요.</div>
+        </div>
+
+        <!-- 비밀번호 -->
+        <div class="field">
+          <label for="pw">비밀번호</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock ico"></i>
+            <input type="password" class="inp" id="pw"
+              placeholder="비밀번호를 입력하세요"
+              autocomplete="current-password">
+            <button type="button" class="eye" id="eyeBtn">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <div class="err-msg" id="pwErr">비밀번호를 입력해 주세요.</div>
+        </div>
+
+        <!-- 제출 버튼 -->
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <div class="spin"></div>
+          <span class="btn-text">
+            <i class="fa-solid fa-right-to-bracket"></i> 로그인
+          </span>
+        </button>
+
+      </form>
+
+      <div class="divider"><span>또는</span></div>
+
+      <div class="footer-link">
+        아직 계정이 없으신가요? <a href="register.html">회원가입</a>
+      </div>
+      <div class="contact">
+        비밀번호 분실 시 총무팀 문의 · 내선 1234
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* Supabase 초기화 */
+    var sb = supabase.createClient(
+      'https://gnvruxqlyedlsjuwodsd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdudnJ1eHFseWVkbHNqdXdvZHNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NTk0MjgsImV4cCI6MjEwMDQzNTQyOH0.ugQNMmHl2E5r86rRvPoqLejz7O-0In7QH9T6xL8RhyM'
+    );
+
+    /* 이미 로그인된 경우 메인으로 */
+    sb.auth.getSession().then(function(res) {
+      if (res.data && res.data.session) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    /* 비밀번호 보기/숨기기 */
+    document.getElementById('eyeBtn').addEventListener('click', function() {
+      var inp = document.getElementById('pw');
+      var ico = this.querySelector('i');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        ico.className = 'fa-solid fa-eye-slash';
+      } else {
+        inp.type = 'password';
+        ico.className = 'fa-solid fa-eye';
+      }
+    });
+
+    /* 알림 표시 */
+    function showAlert(msg, type) {
+      var box = document.getElementById('alertBox');
+      var txt = document.getElementById('alertMsg');
+      txt.textContent = msg;
+      box.className = 'alert show ' + (type || 'err');
+    }
+
+    /* 로그인 폼 */
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      var empId = document.getElementById('empId').value.trim();
+      var pw    = document.getElementById('pw').value;
+      var btn   = document.getElementById('submitBtn');
+
+      /* 오류 초기화 */
+      document.getElementById('empIdErr').style.display = 'none';
+      document.getElementById('pwErr').style.display    = 'none';
+      document.getElementById('empId').classList.remove('error');
+      document.getElementById('pw').classList.remove('error');
+      document.getElementById('alertBox').className = 'alert';
+
+      /* 유효성 검사 */
+      var ok = true;
+      if (!empId) {
+        document.getElementById('empIdErr').style.display = 'block';
+        document.getElementById('empId').classList.add('error');
+        ok = false;
+      }
+      if (!pw) {
+        document.getElementById('pwErr').style.display = 'block';
+        document.getElementById('pw').classList.add('error');
+        ok = false;
+      }
+      if (!ok) return;
+
+      /* 로딩 */
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      try {
+        var email  = empId + '@company.co.kr';
+        var result = await sb.auth.signInWithPassword({
+          email: email, password: pw
+        });
+
+        if (result.error) {
+          showAlert('사번 또는 비밀번호가 올바르지 않습니다.', 'err');
+          return;
+        }
+
+        /* 로그인 성공 → 메인으로 */
+        showAlert('로그인 성공! 이동 중...', 'suc');
+        setTimeout(function() {
+          window.location.href = 'index.html';
+        }, 800);
+
+      } catch(err) {
+        showAlert('오류가 발생했습니다. 다시 시도해 주세요.', 'err');
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    });
+
+    /* Enter 키 */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+      }
+    });
+  </script>
+</body>
+</html>

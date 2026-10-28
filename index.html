@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>모아 (MOA)</title>
+  <link rel="stylesheet" href="css/main-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <!-- Supabase 인증 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body class="main-page">
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+        <button class="btn-logout" id="headerLogoutBtn" style="display:none;">
+          <i class="fa-solid fa-right-from-bracket"></i> 로그아웃
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-inner">
+      <a href="uniform.html">근무복 신청</a>
+      <a href="sports.html">체육복 신청</a>
+      <a href="welfare.html">복지포인트</a>
+      <a href="resort.html">휴양소</a>
+      <a href="admin.html">관리자</a>
+    </div>
+  </div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <!-- ===== 시네마 히어로 (영상 배경) ===== -->
+  <section class="cinema-hero" id="cinemaHero">
+    <div class="cinema-slide active" data-idx="0">
+      <video class="cinema-video" src="videos/hero-uniform.mp4" muted loop playsinline preload="auto"></video>
+      <div class="cinema-overlay"></div>
+      <div class="cinema-content">
+        <h1 class="cinema-headline">
+          <span class="line">여러분들의 하루를 더 편하게 모아 드립니다.</span>
+          <span class="line">출장과 복지, 번거로움은 줄이고 편안함은 더합니다.</span>
+        </h1>
+      </div>
+    </div>
+    <div class="cinema-slide" data-idx="1">
+      <video class="cinema-video" src="videos/hero-sports.mp4" muted loop playsinline preload="auto"></video>
+      <div class="cinema-overlay"></div>
+      <div class="cinema-content">
+        <h1 class="cinema-headline">
+          <span class="line">바쁜 하루 속 든든한 베이스캠프,</span>
+          <span class="line">업무도 쉼도, 모아와 함께 준비하세요.</span>
+        </h1>
+      </div>
+    </div>
+    <div class="cinema-slide" data-idx="2">
+      <video class="cinema-video" src="videos/hero-welfare.mp4" muted loop playsinline preload="auto"></video>
+      <div class="cinema-overlay"></div>
+      <div class="cinema-content">
+        <h1 class="cinema-headline">
+          <span class="line">작은 요청도 놓치지 않는 총무의 손길,</span>
+          <span class="line">찾지 말고, 묻지 말고, 모아에서 해결하세요.</span>
+        </h1>
+      </div>
+    </div>
+    <div class="cinema-slide" data-idx="3">
+      <video class="cinema-video" src="videos/hero-resort.mp4" muted loop playsinline preload="auto"></video>
+      <div class="cinema-overlay"></div>
+      <div class="cinema-content">
+        <h1 class="cinema-headline">
+          <span class="line">오늘도 모아가 여러분의 일상을 채웁니다.</span>
+          <span class="line">필요한 서비스를 가까운 곳에서 만나보세요.</span>
+        </h1>
+      </div>
+    </div>
+
+    <div class="cinema-dots" id="cinemaDots">
+      <button class="cinema-dot active" data-idx="0"></button>
+      <button class="cinema-dot" data-idx="1"></button>
+      <button class="cinema-dot" data-idx="2"></button>
+      <button class="cinema-dot" data-idx="3"></button>
+    </div>
+    <div class="cinema-scroll"><div class="cinema-scroll-line"></div><span>Scroll</span></div>
+  </section>
+
+  <!-- ===== 통계 임팩트 밴드 ===== -->
+  <section class="impact-band" id="impactBand">
+    <div class="impact-band-bg">
+      <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1800&q=80&auto=format&fit=crop" alt=""/>
+    </div>
+    <div class="impact-band-overlay"></div>
+    <div class="impact-inner">
+      <div class="impact-top">
+        <span class="impact-label">Together, TECZEN</span>
+        <h2 class="impact-heading">임직원과 함께 만들어가는<br/>모아의 지금</h2>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-stat reveal" style="--reveal-i:0">
+          <div class="impact-num"><span class="num" data-target="1284">0</span><span class="unit">건</span></div>
+          <div class="impact-stat-label">누적 서비스 신청</div>
+        </div>
+        <div class="impact-stat reveal" style="--reveal-i:1">
+          <div class="impact-num"><span class="num" data-target="8.2" data-decimals="1">0</span><span class="unit">억원</span></div>
+          <div class="impact-stat-label">지급된 복지포인트</div>
+        </div>
+        <div class="impact-stat reveal" style="--reveal-i:2">
+          <div class="impact-num"><span class="num" data-target="1432">0</span><span class="unit">명</span></div>
+          <div class="impact-stat-label">서비스 이용 임직원</div>
+        </div>
+        <div class="impact-stat reveal" style="--reveal-i:3">
+          <div class="impact-num"><span class="num" data-target="6">0</span><span class="unit">개소</span></div>
+          <div class="impact-stat-label">전국 임직원 휴양소</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 서비스 포스터 카드 ===== -->
+  <section class="services-section">
+    <div class="section-inner">
+      <div class="section-top">
+        <div class="section-label">Services</div>
+        <h2 class="section-heading">필요한 서비스를 바로 찾아보세요</h2>
+      </div>
+      <div class="svc3-grid">
+        <a href="uniform.html" class="svc3-card reveal" style="--reveal-i:0">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop" alt="근무복"/>
+          <div class="svc3-overlay"></div>
+          <span class="svc3-badge" style="background:rgba(0,76,152,0.9)">신청중</span>
+          <div class="svc3-content">
+            <h3 class="svc3-title">근무복 신청</h3>
+            <p class="svc3-desc">하계·동계 근무복 사이즈 조사 및 지급 신청</p>
+            <span class="svc3-cta">자세히 보기 <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </a>
+        <a href="sports.html" class="svc3-card reveal" style="--reveal-i:1">
+          <img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&q=80&auto=format&fit=crop" alt="체육복"/>
+          <div class="svc3-overlay"></div>
+          <span class="svc3-badge" style="background:rgba(22,163,74,0.9)">신청예정</span>
+          <div class="svc3-content">
+            <h3 class="svc3-title">체육복 신청</h3>
+            <p class="svc3-desc">연간 픽스 제품 선택 및 사이즈 신청</p>
+            <span class="svc3-cta">자세히 보기 <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </a>
+        <a href="welfare.html" class="svc3-card reveal" style="--reveal-i:2">
+          <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&q=80&auto=format&fit=crop" alt="복지포인트"/>
+          <div class="svc3-overlay"></div>
+          <span class="svc3-badge" style="background:rgba(217,119,6,0.9)">지급완료</span>
+          <div class="svc3-content">
+            <h3 class="svc3-title">복지포인트</h3>
+            <p class="svc3-desc">분기별 포인트 지급 현황 및 사용 신청</p>
+            <span class="svc3-cta">자세히 보기 <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </a>
+        <a href="resort.html" class="svc3-card reveal" style="--reveal-i:3">
+          <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80&auto=format&fit=crop" alt="휴양소"/>
+          <div class="svc3-overlay"></div>
+          <span class="svc3-badge" style="background:rgba(124,58,237,0.9)">신청중</span>
+          <div class="svc3-content">
+            <h3 class="svc3-title">휴양소 예약</h3>
+            <p class="svc3-desc">전국 6개 임직원 휴양소 일정 예약</p>
+            <span class="svc3-cta">자세히 보기 <i class="fa-solid fa-arrow-right"></i></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+   <!-- ===== 내 신청 현황 (다크 프리미엄) ===== -->
+  <section class="mystatus-section">
+    <div class="section-inner">
+      <div class="section-top">
+        <div class="section-label">My Status</div>
+        <h2 class="section-heading">내 신청 현황</h2>
+      </div>
+      <div class="stat2-grid">
+        <div class="stat2-card reveal" style="--reveal-i:0;--accent:var(--navy)">
+          <div class="stat2-top">
+            <span class="stat2-label">근무복 신청</span>
+            <div class="stat2-icon" style="background:rgba(0,76,152,0.25);color:#8ec0ff"><i class="fa-solid fa-shirt"></i></div>
+          </div>
+          <div class="stat2-value">완료</div>
+        </div>
+        <div class="stat2-card reveal" style="--reveal-i:1;--accent:var(--green-d)">
+          <div class="stat2-top">
+            <span class="stat2-label">복지포인트</span>
+            <div class="stat2-icon" style="background:rgba(22,163,74,0.2);color:#6ee7a0"><i class="fa-solid fa-coins"></i></div>
+          </div>
+          <div class="stat2-value">300,000<span>원</span></div>
+        </div>
+        <div class="stat2-card reveal" style="--reveal-i:2;--accent:var(--amber)">
+          <div class="stat2-top">
+            <span class="stat2-label">휴양소 예약</span>
+            <div class="stat2-icon" style="background:rgba(217,119,6,0.2);color:#fbbf6d"><i class="fa-solid fa-house-chimney-window"></i></div>
+          </div>
+          <div class="stat2-value">검토중</div>
+        </div>
+        <div class="stat2-card reveal" style="--reveal-i:3;--accent:var(--purple-d)">
+          <div class="stat2-top">
+            <span class="stat2-label">잔여 포인트</span>
+            <div class="stat2-icon" style="background:rgba(124,58,237,0.2);color:#c4a3fb"><i class="fa-solid fa-wallet"></i></div>
+          </div>
+          <div class="stat2-value">600,000<span>원</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER (프리미엄 안내형) ===== -->
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다. 근무복, 체육복, 복지포인트, 휴양소 예약까지 — 필요한 사내 서비스를 한 곳에서 빠르게 이용하세요.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="uniform.html"><i class="fa-solid fa-angle-right"></i> 근무복 신청</a>
+          <a href="sports.html"><i class="fa-solid fa-angle-right"></i> 체육복 신청</a>
+          <a href="welfare.html"><i class="fa-solid fa-angle-right"></i> 복지포인트</a>
+          <a href="resort.html"><i class="fa-solid fa-angle-right"></i> 휴양소 예약</a>
+          <a href="admin.html"><i class="fa-solid fa-angle-right"></i> 관리자</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-phone"></i></div>
+            <div><div class="footer-contact-label">Tel</div><div class="footer-contact-value">055-000-0000 (내선 1234)</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div><div class="footer-contact-label">Address</div><div class="footer-contact-value">경남 창원시 성산구 성주로 121</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-clock"></i></div>
+            <div><div class="footer-contact-label">Hours</div><div class="footer-contact-value">평일 09:00 ~ 18:00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+      <div class="footer-policy">
+        <a href="#">개인정보처리방침</a>
+        <a href="#">이용약관</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== 모아 챗봇 ===== -->
+  <button class="moa-chat-launcher" id="moaChatLauncher"><i class="fa-solid fa-comment-dots"></i></button>
+
+  <div class="moa-chat-window" id="moaChatWindow">
+    <div class="moa-chat-header">
+      <div class="moa-chat-header-info">
+        <div class="moa-chat-avatar"><i class="fa-solid fa-robot"></i></div>
+        <div>
+          <div class="moa-chat-title">모아 복지도우미</div>
+          <div class="moa-chat-status"><span class="moa-dot"></span> 온라인</div>
+        </div>
+      </div>
+      <button class="moa-chat-close" id="moaChatClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="moa-chat-body" id="moaChatBody"></div>
+    <div class="moa-chat-quick" id="moaChatQuick"></div>
+    <form class="moa-chat-input" id="moaChatForm">
+      <input type="text" id="moaChatInput" placeholder="궁금한 점을 물어보세요..." autocomplete="off"/>
+      <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+    </form>
+  </div>
+
+  <script src="js/reveal.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/chatbot.js"></script>
+
+  <!-- ===== 로그인 체크 + 헤더 사용자 정보 ===== -->
+  <script>
+  (async function() {
+    try {
+      var user = await requireAuth();
+      if (!user) return;
+      var profile = await getUserProfile(user.id);
+      var empName = profile ? profile.emp_name : '사용자';
+      var nameEl = document.getElementById('headerUserName');
+      if (nameEl) nameEl.textContent = empName;
+      var logoutBtn = document.getElementById('headerLogoutBtn');
+      if (logoutBtn) {
+        logoutBtn.style.display = 'inline-flex';
+        logoutBtn.addEventListener('click', function() {
+          if (confirm('로그아웃 하시겠습니까?')) signOut();
+        });
+      }
+      var headerRight = document.querySelector('.header-right');
+      if (headerRight) headerRight.style.display = 'flex';
+    } catch(e) {
+      console.log('Auth error:', e);
+    }
+  })();
+  </script>
+
+</body>
+</html>

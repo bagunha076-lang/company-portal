@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>복지포인트 - 총무포털</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/sub.css"/>
+  <link rel="stylesheet" href="css/welfare.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body>
+
+<!-- ===== 헤더 ===== -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-mark">G</div>
+      <span class="logo-text">총무포털</span>
+    </a>
+    <nav class="gnb">
+      <a href="uniform.html" class="gnb-link">근무복 신청</a>
+      <a href="sports.html"  class="gnb-link">체육복 신청</a>
+      <a href="welfare.html" class="gnb-link active">복지포인트</a>
+      <a href="resort.html"  class="gnb-link">휴양소</a>
+      <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+    </nav>
+    <div class="header-right" id="headerRight">
+      <button class="btn-user" id="headerUserBtn">
+        <i class="fa-solid fa-circle-user"></i>
+        <span id="headerUserName">로딩중...</span>
+      </button>
+    </div>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a>
+    <a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a>
+    <a href="resort.html">휴양소</a>
+    <a href="admin.html">관리자</a>
+  </div>
+</div>
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<!-- ===== 히어로 ===== -->
+<section class="sub-hero hero-orange">
+  <div class="sub-hero-inner">
+    <div class="sub-hero-left">
+      <div class="sub-breadcrumb">
+        <a href="index.html">홈</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>복지포인트</span>
+      </div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-coins"></i> 복지포인트</div>
+      <h1>연간 복지포인트<br/>현황을 확인하세요</h1>
+      <p>신청 가능 포인트 확인 및<br/>상품권 전환 신청을 해주세요.</p>
+      <div class="sub-hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-icon"><i class="fa-solid fa-coins"></i></div>
+          <div class="hero-stat-info">
+            <span class="hero-stat-val" id="heroAvailPt">- 원</span>
+            <span class="hero-stat-label">신청 가능 포인트</span>
+          </div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-icon"><i class="fa-solid fa-user"></i></div>
+          <div class="hero-stat-info">
+            <span class="hero-stat-val" id="heroEmpName">-</span>
+            <span class="hero-stat-label">로그인 사용자</span>
+          </div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-icon"><i class="fa-solid fa-gift"></i></div>
+          <div class="hero-stat-info">
+            <span class="hero-stat-val" id="heroDeadlineDday">D-?</span>
+            <span class="hero-stat-label">상품권 신청 마감</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sub-hero-right">
+      <div class="hero-deco hero-deco-1"></div>
+      <div class="hero-deco hero-deco-2"></div>
+      <div class="hero-deco hero-deco-3"></div>
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span class="hero-card-title">🪙 내 포인트 현황</span>
+          <span class="hero-card-badge">2026년</span>
+        </div>
+        <div class="hero-point-amount">
+          <span class="hero-point-number" id="heroPointNumber">0</span>
+          <span class="hero-point-unit">원 잔여</span>
+        </div>
+        <div class="hero-gauge">
+          <div class="hero-gauge-label">
+            <span id="heroGaugeUsed">사용 0원</span>
+            <span id="heroGaugeTotal">총 0원</span>
+          </div>
+          <div class="hero-gauge-bar">
+            <div class="hero-gauge-fill" id="heroGaugeFill"></div>
+          </div>
+        </div>
+        <div class="hero-card-items">
+          <div class="hero-card-item">
+            <div class="hero-item-left">
+              <div class="hero-item-dot green"></div>
+              <span>신청 가능 포인트</span>
+            </div>
+            <span class="hero-item-val" id="heroCardAvail">-</span>
+          </div>
+          <div class="hero-card-item">
+            <div class="hero-item-left">
+              <div class="hero-item-dot yellow"></div>
+              <span>24년 잔여 포인트</span>
+            </div>
+            <span class="hero-item-val" id="heroCardPrev">-</span>
+          </div>
+          <div class="hero-card-item">
+            <div class="hero-item-left">
+              <div class="hero-item-dot" id="heroStatusDot" style="background:#94a3b8"></div>
+              <span>신청 상태</span>
+            </div>
+            <span class="hero-item-val" id="heroCardStatus">미신청</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 탭 네비게이션 ===== -->
+<div class="tab-nav-wrap">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" data-tab="point-giftcard">
+      <i class="fa-solid fa-gift"></i> 상품권 전환 신청
+    </button>
+    <button class="tab-btn" data-tab="point-myrequest">
+      <i class="fa-solid fa-receipt"></i> 나의 신청 내역
+    </button>
+  </div>
+</div>
+
+<!-- ===== 메인 콘텐츠 ===== -->
+<main>
+
+  <!-- ===== 탭1: 상품권 전환 ===== -->
+  <div class="tab-panel active" id="tab-point-giftcard">
+    <div class="page-body">
+
+      <!-- 역할 선택 -->
+      <div class="role-banner">
+        <div class="role-btn-wrap">
+          <button class="role-btn active" id="roleEmployee" onclick="switchRole('employee')">
+            <i class="fa-solid fa-user"></i>
+            <span>개인 신청</span>
+            <small>본인 포인트 → 상품권</small>
+          </button>
+          <button class="role-btn" id="roleManager" onclick="switchRole('manager')">
+            <i class="fa-solid fa-users"></i>
+            <span>부서 담당자</span>
+            <small>팀 전체 엑셀 업로드</small>
+          </button>
+          <button class="role-btn" id="roleAdmin" onclick="switchRole('admin')">
+            <i class="fa-solid fa-chart-bar"></i>
+            <span>총무팀 관리자</span>
+            <small>전체 현황 관리</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- ==============================
+           역할1: 개인 신청
+      ============================== -->
+      <div id="view-employee" class="role-view active">
+
+        <div class="gc-summary-cards">
+          <div class="gc-sc">
+            <div class="gc-sc-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-wallet"></i></div>
+            <div class="gc-sc-body">
+              <div class="gc-sc-label">보유 포인트</div>
+              <div class="gc-sc-val" id="empTotalPt">-</div>
+            </div>
+          </div>
+          <div class="gc-sc">
+            <div class="gc-sc-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-coins"></i></div>
+            <div class="gc-sc-body">
+              <div class="gc-sc-label">신청 가능 포인트</div>
+              <div class="gc-sc-val" id="empAvailPt">-</div>
+            </div>
+          </div>
+          <div class="gc-sc">
+            <div class="gc-sc-icon" style="background:#fff7ed;color:#ea580c"><i class="fa-solid fa-calendar-xmark"></i></div>
+            <div class="gc-sc-body">
+              <div class="gc-sc-label">신청 마감일</div>
+              <div class="gc-sc-val deadline" id="empDeadline">2025.09.23</div>
+            </div>
+          </div>
+          <div class="gc-sc">
+            <div class="gc-sc-icon" style="background:#faf5ff;color:#7c3aed"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="gc-sc-body">
+              <div class="gc-sc-label">신청 상태</div>
+              <div class="gc-sc-val" id="empStatus" style="color:#d97706;font-weight:800;">미신청</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 포인트 없음 안내 -->
+        <div id="noPointsNotice" style="display:none;background:#fef9c3;border:1px solid #fde047;border-radius:14px;padding:20px 24px;margin-bottom:24px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <i class="fa-solid fa-circle-info" style="color:#ca8a04;font-size:1.3rem"></i>
+            <div>
+              <strong style="color:#854d0e;font-size:.95rem">포인트 데이터가 아직 없습니다.</strong>
+              <p style="color:#92400e;font-size:.85rem;margin-top:4px;line-height:1.6">
+                총무팀에서 포인트를 업로드하면 자동으로 조회됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 신청 폼 -->
+        <div class="gc-form-card reveal">
+          <div class="gc-form-title"><i class="fa-solid fa-gift"></i> 상품권 전환 신청서</div>
+          <div class="gc-form-body">
+            <form id="empGiftForm" novalidate>
+
+              <!-- STEP 01 -->
+              <div class="gc-step">
+                <div class="gc-step-title">
+                  <span class="gc-step-num">01</span> 신청자 정보 확인
+                </div>
+                <div class="gc-info-grid">
+                  <div class="gc-info-item">
+                    <label>사번</label>
+                    <input type="text" id="empId" value="-" readonly class="gc-input-ro">
+                  </div>
+                  <div class="gc-info-item">
+                    <label>성명</label>
+                    <input type="text" id="empName" value="-" readonly class="gc-input-ro">
+                  </div>
+                  <div class="gc-info-item">
+                    <label>부서/팀</label>
+                    <input type="text" id="empDept" value="-" readonly class="gc-input-ro">
+                  </div>
+                  <div class="gc-info-item">
+                    <label>근무지</label>
+                    <input type="text" id="empLoc" value="-" readonly class="gc-input-ro">
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 02 -->
+              <div class="gc-step">
+                <div class="gc-step-title">
+                  <span class="gc-step-num">02</span> 포인트 현황 확인
+                </div>
+                <div class="gc-point-boxes">
+                  <div class="gc-pt-box">
+                    <span class="gc-pt-label">보유 포인트</span>
+                    <strong class="gc-pt-val" id="formTotalPt">- P</strong>
+                  </div>
+                  <div class="gc-pt-box apply">
+                    <span class="gc-pt-label">신청 대상 포인트</span>
+                    <strong class="gc-pt-val" id="formApplyPt">0 P</strong>
+                  </div>
+                  <div class="gc-pt-box carryover">
+                    <span class="gc-pt-label">이월 예정 (5천원 미만)</span>
+                    <strong class="gc-pt-val" id="formCarryPt">0 P</strong>
+                  </div>
+                  <div class="gc-pt-box prev-year">
+                    <span class="gc-pt-label">24년 잔여 포인트</span>
+                    <strong class="gc-pt-val" id="formPrevPt">0 P</strong>
+                  </div>
+                </div>
+                <div class="gc-pt-input-row">
+                  <label for="applyPtInput">신청 포인트 직접 입력</label>
+                  <div class="gc-pt-input-wrap">
+                    <input type="number" id="applyPtInput" placeholder="포인트 입력" min="5000" step="5000" class="gc-input">
+                    <span class="gc-pt-unit">P</span>
+                  </div>
+                  <button type="button" class="gc-btn-all" id="applyAllBtn">전액 신청</button>
+                </div>
+              </div>
+
+              <!-- STEP 03 -->
+              <div class="gc-step">
+                <div class="gc-step-title">
+                  <span class="gc-step-num">03</span> 상품권 종류 선택
+                  <span class="gc-step-hint">※ 추가지급율: 롯데/신세계 +2%, 대동백화점 +3.5%, 현대 없음</span>
+                </div>
+                <div class="gc-card-type-grid">
+                  <label class="gc-card-type-item">
+                    <input type="radio" name="cardType" value="lotte" data-rate="0.02">
+                    <div class="gc-card-type-box">
+                      <div class="gc-card-name">롯데</div>
+                      <div class="gc-card-bonus">+2%</div>
+                      <div class="gc-card-desc">롯데백화점/마트 등</div>
+                    </div>
+                  </label>
+                  <label class="gc-card-type-item">
+                    <input type="radio" name="cardType" value="shinsegae" data-rate="0.02">
+                    <div class="gc-card-type-box">
+                      <div class="gc-card-name">신세계</div>
+                      <div class="gc-card-bonus">+2%</div>
+                      <div class="gc-card-desc">신세계백화점/이마트 등</div>
+                    </div>
+                  </label>
+                  <label class="gc-card-type-item">
+                    <input type="radio" name="cardType" value="daedong" data-rate="0.035">
+                    <div class="gc-card-type-box">
+                      <div class="gc-card-name">대동</div>
+                      <div class="gc-card-bonus best">+3.5%</div>
+                      <div class="gc-card-desc">창원지역 백화점</div>
+                    </div>
+                  </label>
+                  <label class="gc-card-type-item">
+                    <input type="radio" name="cardType" value="hyundai" data-rate="0">
+                    <div class="gc-card-type-box">
+                      <div class="gc-card-name">현대</div>
+                      <div class="gc-card-bonus none">추가없음</div>
+                      <div class="gc-card-desc">현대백화점/홈쇼핑 등</div>
+                    </div>
+                  </label>
+                </div>
+                <div class="gc-calc-result" id="calcResult" style="display:none;">
+                  <div class="gc-calc-row">
+                    <span>신청 포인트</span>
+                    <strong id="calcBase">0 원</strong>
+                  </div>
+                  <div class="gc-calc-row accent">
+                    <span>추가 지급액 <em id="calcRateTxt"></em></span>
+                    <strong id="calcBonus">+ 0 원</strong>
+                  </div>
+                  <div class="gc-calc-row total">
+                    <span>실지급 상품권 금액</span>
+                    <strong id="calcTotal">0 원</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- STEP 04 -->
+              <div class="gc-step">
+                <div class="gc-step-title">
+                  <span class="gc-step-num">04</span> 권종별 수량 입력
+                </div>
+                <!-- 안내 문구 -->
+                <div id="denomHint" style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:.88rem;line-height:1.7;color:#94a3b8;">
+                  ⚠️ 신청 포인트와 상품권 종류를 먼저 선택해 주세요.
+                </div>
+                <div class="gc-denom-wrap">
+                  <table class="gc-denom-table">
+                    <thead>
+                      <tr><th>권종</th><th>단가</th><th>수량</th><th>소계</th><th>자동구성</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><span class="gc-denom-badge d10">10만권</span></td>
+                        <td>100,000원</td>
+                        <td><input type="number" class="gc-qty-input" data-denom="100000" min="0" value="0" id="qty100000"></td>
+                        <td class="gc-subtotal" id="sub100000">0원</td>
+                        <td rowspan="4">
+                          <button type="button" class="gc-btn-auto" id="autoFillBtn">
+                            <i class="fa-solid fa-magic"></i><br>자동 구성
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><span class="gc-denom-badge d5">5만권</span></td>
+                        <td>50,000원</td>
+                        <td><input type="number" class="gc-qty-input" data-denom="50000" min="0" value="0" id="qty50000"></td>
+                        <td class="gc-subtotal" id="sub50000">0원</td>
+                      </tr>
+                      <tr>
+                        <td><span class="gc-denom-badge d1">1만권</span></td>
+                        <td>10,000원</td>
+                        <td><input type="number" class="gc-qty-input" data-denom="10000" min="0" value="0" id="qty10000"></td>
+                        <td class="gc-subtotal" id="sub10000">0원</td>
+                      </tr>
+                      <tr>
+                        <td><span class="gc-denom-badge d05">5천권</span></td>
+                        <td>5,000원</td>
+                        <td><input type="number" class="gc-qty-input" data-denom="5000" min="0" value="0" id="qty5000"></td>
+                        <td class="gc-subtotal" id="sub5000">0원</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colspan="3"><strong>신청확인 금액 합계</strong></td>
+                        <td id="confirmTotal" class="gc-confirm-total">0원</td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div class="gc-match-check" id="matchCheck">
+                  <span class="gc-match-icon" id="matchIcon">⬜</span>
+                  <span id="matchText">포인트와 상품권 종류를 선택 후 수량을 입력해 주세요.</span>
+                </div>
+              </div>
+
+              <div class="gc-form-actions">
+                <button type="button" class="gc-btn-save" id="saveDraftBtn">
+                  <i class="fa-solid fa-floppy-disk"></i> 임시저장
+                </button>
+                <button type="submit" class="gc-btn-submit" id="gcSubmitBtn" disabled>
+                  <i class="fa-solid fa-check-circle"></i> 신청서 제출
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div><!-- /view-employee -->
+
+      <!-- ==============================
+           역할2: 부서 담당자
+      ============================== -->
+      <div id="view-manager" class="role-view">
+        <div class="gc-notice-box">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <div>
+            <strong>부서 담당자 엑셀 업로드 안내</strong>
+            <p>팀 전체 신청서를 지정 양식으로 작성 후 업로드해 주세요.</p>
+            <ul>
+              <li>오류 행은 팝업으로 알려드리며, 정상 행은 자동 처리됩니다.</li>
+              <li>5천원 미만 잔액은 자동으로 이월 처리됩니다.</li>
+              <li>추가지급율은 시스템에서 자동 계산됩니다.</li>
+              <li>마감일: <strong id="mgrDeadline">2025.09.23</strong></li>
+            </ul>
+          </div>
+          <a href="#" class="gc-btn-template" id="templateDownBtn">
+            <i class="fa-solid fa-file-excel"></i> 양식 다운로드
+          </a>
+        </div>
+
+        <div class="gc-upload-section">
+          <div class="gc-upload-drop" id="uploadDrop">
+            <div class="gc-upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <div class="gc-upload-text">엑셀 파일을 여기에 드래그하거나</div>
+            <label class="gc-btn-file-select" for="excelFile">파일 선택</label>
+            <input type="file" id="excelFile" accept=".xlsx,.xls" hidden>
+            <div class="gc-upload-hint">.xlsx / .xls 파일만 허용 (최대 10MB)</div>
+          </div>
+          <div class="gc-file-preview" id="filePreview" style="display:none;">
+            <div class="gc-file-info">
+              <i class="fa-solid fa-file-excel" style="color:#16a34a;font-size:1.5rem"></i>
+              <div class="gc-file-detail">
+                <div class="gc-file-name" id="fileName"></div>
+                <div class="gc-file-size" id="fileSize"></div>
+              </div>
+              <button type="button" class="gc-btn-remove" id="removeFileBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="gc-progress-wrap" id="progressWrap" style="display:none;">
+              <div class="gc-progress-bar"><div class="gc-progress-fill" id="progressFill"></div></div>
+              <span class="gc-progress-text" id="progressText">0%</span>
+            </div>
+            <button type="button" class="gc-btn-upload" id="uploadStartBtn">
+              <i class="fa-solid fa-rocket"></i> 업로드 시작
+            </button>
+          </div>
+        </div>
+
+        <div class="gc-upload-stats" id="uploadStats" style="display:none;">
+          <div class="gc-stat-card success">
+            <i class="fa-solid fa-check-circle"></i>
+            <div class="gc-stat-body"><div class="gc-stat-label">정상 처리</div><div class="gc-stat-val" id="statSuccess">0</div>건</div>
+          </div>
+          <div class="gc-stat-card warning">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="gc-stat-body"><div class="gc-stat-label">오류 발생</div><div class="gc-stat-val" id="statError">0</div>건</div>
+          </div>
+          <div class="gc-stat-card info">
+            <i class="fa-solid fa-users"></i>
+            <div class="gc-stat-body"><div class="gc-stat-label">전체 행</div><div class="gc-stat-val" id="statTotal">0</div>건</div>
+          </div>
+        </div>
+
+        <div class="gc-upload-history">
+          <h4><i class="fa-solid fa-clock-rotate-left"></i> 업로드 이력</h4>
+          <table class="gc-history-table">
+            <thead>
+              <tr><th>업로드 일시</th><th>파일명</th><th>부서</th><th>전체</th><th>성공</th><th>실패</th><th>상태</th></tr>
+            </thead>
+            <tbody id="uploadHistoryBody">
+              <tr><td colspan="7" class="gc-empty-row">업로드 이력이 없습니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /view-manager -->
+
+      <!-- ==============================
+           역할3: 총무팀 관리자
+      ============================== -->
+      <div id="view-admin" class="role-view">
+
+        <!-- 포인트 등록 버튼 -->
+        <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+          <button id="openPointRegBtn" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
+            <i class="fa-solid fa-coins"></i> 직원 포인트 등록 / 수정
+          </button>
+        </div>
+
+        <!-- 관리자 인증 배너 -->
+        <div style="display:flex;justify-content:space-between;align-items:center;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px 20px;margin-bottom:20px;">
+          <span style="font-size:.88rem;font-weight:700;color:#15803d;">
+            <i class="fa-solid fa-shield-check"></i> 관리자 인증 완료 — 총무팀 전용 메뉴
+          </span>
+          <button id="adminLogoutBtn" style="padding:6px 14px;background:#fee2e2;border:none;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700;color:#dc2626;font-family:inherit;">
+            <i class="fa-solid fa-right-from-bracket"></i> 관리자 로그아웃
+          </button>
+        </div>
+
+        <!-- 집계 카드 -->
+        <div class="gc-admin-stats">
+          <div class="gc-adstat">
+            <div class="gc-adstat-icon" style="background:#eff6ff;color:#2563eb"><i class="fa-solid fa-users"></i></div>
+            <div class="gc-adstat-body"><div class="gc-adstat-label">전체 신청 인원</div><div class="gc-adstat-val" id="adStatTotal">-</div></div>
+          </div>
+          <div class="gc-adstat">
+            <div class="gc-adstat-icon" style="background:#f0fdf4;color:#16a34a"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="gc-adstat-body"><div class="gc-adstat-label">신청 완료</div><div class="gc-adstat-val gc-green" id="adStatDone">-</div></div>
+          </div>
+          <div class="gc-adstat">
+            <div class="gc-adstat-icon" style="background:#fef9c3;color:#854d0e"><i class="fa-solid fa-clock"></i></div>
+            <div class="gc-adstat-body"><div class="gc-adstat-label">미신청</div><div class="gc-adstat-val gc-orange" id="adStatPending">-</div></div>
+          </div>
+          <div class="gc-adstat">
+            <div class="gc-adstat-icon" style="background:#fdf4ff;color:#7c3aed"><i class="fa-solid fa-won-sign"></i></div>
+            <div class="gc-adstat-body"><div class="gc-adstat-label">총 신청 금액</div><div class="gc-adstat-val" id="adStatAmt">-</div></div>
+          </div>
+          <div class="gc-adstat">
+            <div class="gc-adstat-icon" style="background:#fff7ed;color:#ea580c"><i class="fa-solid fa-gift"></i></div>
+            <div class="gc-adstat-body"><div class="gc-adstat-label">총 지급 금액 (추가 포함)</div><div class="gc-adstat-val gc-red" id="adStatPayout">-</div></div>
+          </div>
+        </div>
+
+        <!-- 필터 툴바 -->
+        <div class="gc-admin-toolbar">
+          <div class="gc-admin-filters">
+            <select id="adFilterLoc" class="gc-select">
+              <option value="">전체 근무지</option>
+              <option value="본공장">본공장</option>
+              <option value="서산1공장">서산1공장</option>
+              <option value="서산2공장">서산2공장</option>
+              <option value="서산3공장">서산3공장</option>
+              <option value="평택공장">평택공장</option>
+              <option value="정동공장">정동공장</option>
+              <option value="울산공장">울산공장</option>
+            </select>
+            <select id="adFilterCard" class="gc-select">
+              <option value="">전체 상품권</option>
+              <option value="롯데">롯데</option>
+              <option value="신세계">신세계</option>
+              <option value="대동">대동</option>
+              <option value="현대">현대</option>
+            </select>
+            <select id="adFilterStatus" class="gc-select">
+              <option value="">전체 상태</option>
+              <option value="신청완료">신청완료</option>
+              <option value="미신청">미신청</option>
+              <option value="오류">오류</option>
+            </select>
+            <button type="button" class="gc-btn-search" id="adSearchBtn">
+              <i class="fa-solid fa-magnifying-glass"></i> 검색
+            </button>
+          </div>
+          <div class="gc-admin-actions">
+            <button type="button" class="gc-btn-excel-dl" id="adExcelDlBtn">
+              <i class="fa-solid fa-file-excel"></i> 엑셀 다운로드
+            </button>
+          </div>
+        </div>
+
+        <!-- 상품권 종류별 집계 -->
+        <div class="gc-card-type-summary">
+          <h4><i class="fa-solid fa-chart-bar"></i> 상품권 종류별 집계</h4>
+          <div class="gc-ct-grid">
+            <div class="gc-ct-item">
+              <div class="gc-ct-name">롯데</div>
+              <div class="gc-ct-cnt" id="ctLotteCnt">0명</div>
+              <div class="gc-ct-amt" id="ctLotteAmt">0원</div>
+              <div class="gc-ct-payout"><small>실지급 (+2%)</small><strong id="ctLottePayout">0원</strong></div>
+            </div>
+            <div class="gc-ct-item">
+              <div class="gc-ct-name">신세계</div>
+              <div class="gc-ct-cnt" id="ctShinCnt">0명</div>
+              <div class="gc-ct-amt" id="ctShinAmt">0원</div>
+              <div class="gc-ct-payout"><small>실지급 (+2%)</small><strong id="ctShinPayout">0원</strong></div>
+            </div>
+            <div class="gc-ct-item best">
+              <div class="gc-ct-name">대동</div>
+              <div class="gc-ct-cnt" id="ctDaeCnt">0명</div>
+              <div class="gc-ct-amt" id="ctDaeAmt">0원</div>
+              <div class="gc-ct-payout"><small>실지급 (+3.5%)</small><strong id="ctDaePayout">0원</strong></div>
+            </div>
+            <div class="gc-ct-item">
+              <div class="gc-ct-name">현대</div>
+              <div class="gc-ct-cnt" id="ctHyuCnt">0명</div>
+              <div class="gc-ct-amt" id="ctHyuAmt">0원</div>
+              <div class="gc-ct-payout"><small>실지급 (추가없음)</small><strong id="ctHyuPayout">0원</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 전체 신청 현황 테이블 -->
+        <div class="gc-status-table-wrap">
+          <h4><i class="fa-solid fa-table"></i> 전체 신청 현황</h4>
+          <div class="gc-table-scroll-hint">
+            <i class="fa-solid fa-arrows-left-right"></i> 좌우로 스크롤하면 모든 컬럼을 확인할 수 있습니다.
+          </div>
+          <div class="table-wrap reveal">
+            <table class="data-table gc-status-table" id="adStatusTable">
+              <thead>
+                <tr>
+                  <th>No</th><th>근무지</th><th>부서/팀</th><th>사번</th><th>성명</th>
+                  <th>보유포인트</th><th>신청포인트</th><th>상품권</th><th>추가지급율</th>
+                  <th>실지급금액</th><th>10만권</th><th>5만권</th><th>1만권</th><th>5천권</th><th>상태</th>
+                </tr>
+              </thead>
+              <tbody id="adStatusBody">
+                <tr><td colspan="15" class="gc-empty-row">업로드된 데이터가 없습니다.<br>부서담당자가 먼저 엑셀을 업로드해야 합니다.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /view-admin -->
+
+    </div><!-- /page-body -->
+  </div><!-- /tab-point-giftcard -->
+
+  <!-- ===== 탭2: 나의 신청 내역 ===== -->
+  <div class="tab-panel" id="tab-point-myrequest">
+    <div class="page-body">
+      <div style="margin-bottom:24px;">
+        <h3 style="font-size:1.05rem;font-weight:800;color:#0f172a;margin-bottom:6px;">
+          <i class="fa-solid fa-receipt" style="color:#2563eb;margin-right:8px;"></i> 나의 상품권 신청 내역
+        </h3>
+        <p style="font-size:.85rem;color:#64748b;">본인이 신청한 상품권 전환 내역을 확인할 수 있습니다.</p>
+      </div>
+      <div id="myRequestsList">
+        <div style="text-align:center;padding:48px 20px;color:#94a3b8;">
+          <i class="fa-solid fa-receipt" style="font-size:2.5rem;margin-bottom:16px;display:block;"></i>
+          <div style="font-size:.95rem;font-weight:600;margin-bottom:8px;">신청 내역이 없습니다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== 모달: 관리자 인증 ===== -->
+<div class="gc-modal-overlay" id="adminAuthModal" style="display:none;">
+  <div class="gc-modal-box" style="max-width:380px;">
+    <div class="gc-modal-header">
+      <h3><i class="fa-solid fa-shield-halved" style="color:#7c3aed"></i> 관리자 인증</h3>
+      <button class="gc-modal-close" id="adminAuthClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div style="padding:24px;">
+      <p style="font-size:.9rem;color:#64748b;margin-bottom:18px;">관리자 PIN을 입력해 주세요.</p>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:6px;">관리자 PIN</label>
+        <input type="password" id="adminPinInput" placeholder="PIN 입력"
+          style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:10px;outline:none;box-sizing:border-box;">
+        <p id="adminPinError" style="display:none;color:#dc2626;font-size:.8rem;margin-top:6px;font-weight:600;">
+          ❌ PIN이 올바르지 않습니다.
+        </p>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="gc-btn-cancel" id="adminAuthCancel">취소</button>
+        <button class="gc-btn-confirm" id="adminPinConfirm"><i class="fa-solid fa-unlock"></i> 인증</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 모달: 직원 포인트 등록/수정 ===== -->
+<div class="gc-modal-overlay" id="pointRegModal" style="display:none;">
+  <div class="gc-modal-box" style="max-width:860px;width:95%;">
+    <div class="gc-modal-header">
+      <h3><i class="fa-solid fa-coins" style="color:#2563eb"></i> 직원 포인트 관리</h3>
+      <button class="gc-modal-close" id="pointRegModalClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+      <!-- 좌측: 등록 폼 -->
+      <div style="background:#f8fafc;border-radius:14px;padding:20px;border:1px solid #e2e8f0;">
+        <h4 id="pointRegFormTitle" style="font-size:.92rem;font-weight:800;margin-bottom:16px;color:#0f172a;">
+          ➕ 신규 포인트 등록
+        </h4>
+        <form id="pointRegForm" data-mode="new" onsubmit="return false;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div>
+              <label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">사번 <span style="color:#dc2626">*</span></label>
+              <input id="prEmpId" type="text" placeholder="예) 82210629" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">성명 <span style="color:#dc2626">*</span></label>
+              <input id="prEmpName" type="text" placeholder="예) 홍길동" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">부서/팀</label>
+              <input id="prDept" type="text" placeholder="예) 총무안전팀" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="font-size:.78rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">근무지</label>
+              <input id="prLoc" type="text" placeholder="예) 본공장" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;box-sizing:border-box;">
+            </div>
+          </div>
+          <div style="background:#eff6ff;border-radius:10px;padding:14px;margin-bottom:12px;">
+            <div style="font-size:.78rem;font-weight:700;color:#2563eb;margin-bottom:10px;">💰 포인트 설정</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+              <div>
+                <label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">보유 포인트</label>
+                <input id="prTotal" type="number" placeholder="0" min="0" step="1000" style="width:100%;padding:9px 12px;border:1.5px solid #bfdbfe;border-radius:8px;font-size:.85rem;box-sizing:border-box;background:#fff;">
+              </div>
+              <div>
+                <label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">사용 포인트</label>
+                <input id="prUsed" type="number" placeholder="0" min="0" step="1000" style="width:100%;padding:9px 12px;border:1.5px solid #bfdbfe;border-radius:8px;font-size:.85rem;box-sizing:border-box;background:#fff;">
+              </div>
+              <div>
+                <label style="font-size:.75rem;font-weight:700;color:#64748b;display:block;margin-bottom:4px;">전년도 잔여</label>
+                <input id="prPrev" type="number" placeholder="0" min="0" step="1000" style="width:100%;padding:9px 12px;border:1.5px solid #bfdbfe;border-radius:8px;font-size:.85rem;box-sizing:border-box;background:#fff;">
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button type="button" id="pointRegSaveBtn" style="flex:1;padding:10px;background:#2563eb;color:#fff;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
+              <i class="fa-solid fa-floppy-disk"></i> 저장
+            </button>
+            <button type="button" id="pointRegModalCancel" style="padding:10px 16px;background:#f1f5f9;color:#64748b;border:none;border-radius:10px;font-size:.88rem;font-weight:700;cursor:pointer;font-family:inherit;">
+              취소
+            </button>
+          </div>
+          <!-- 엑셀 일괄 등록 -->
+          <div style="margin-top:16px;padding-top:16px;border-top:1px dashed #e2e8f0;">
+            <div style="font-size:.78rem;font-weight:700;color:#64748b;margin-bottom:8px;">
+              <i class="fa-solid fa-file-excel" style="color:#16a34a"></i> 엑셀 일괄 등록
+            </div>
+            <div style="font-size:.72rem;color:#94a3b8;margin-bottom:8px;">
+              컬럼: 사번 / 성명 / 부서 / 근무지 / 보유포인트 / 사용포인트 / 전년도잔여
+            </div>
+            <label style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;cursor:pointer;font-size:.8rem;font-weight:700;color:#15803d;">
+              <i class="fa-solid fa-upload"></i> 엑셀 파일 선택
+              <input type="file" id="pointExcelFile" accept=".xlsx,.xls" hidden>
+            </label>
+          </div>
+        </form>
+      </div>
+
+      <!-- 우측: 목록 -->
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <input id="pointSearchInput" type="text" placeholder="사번 / 이름 / 부서 검색..."
+          style="padding:9px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:.85rem;">
+        <div style="flex:1;overflow-y:auto;max-height:420px;border:1px solid #e2e8f0;border-radius:10px;">
+          <table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+            <thead style="position:sticky;top:0;background:#f8fafc;z-index:1;">
+              <tr>
+                <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;color:#64748b;font-size:.75rem;">No</th>
+                <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;color:#64748b;font-size:.75rem;">사번</th>
+                <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;color:#64748b;font-size:.75rem;">성명</th>
+                <th style="padding:8px 6px;border-bottom:2px solid #e2e8f0;color:#64748b;font-size:.75rem;">부서</th>
+                <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;color:#64748b;font-size:.75rem;">보유</th>
+                <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;color:#16a34a;font-size:.75rem;">잔여</th>
+                <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;color:#64748b;font-size:.75rem;">관리</th>
+              </tr>
+            </thead>
+            <tbody id="pointListBody">
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8;">등록된 데이터가 없습니다.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:.75rem;color:#94a3b8;text-align:right;">
+          총 <span id="pointListCount">0</span>명 등록됨
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 모달: 신청 확인 ===== -->
+<div class="gc-modal-overlay" id="gcConfirmModal" style="display:none;">
+  <div class="gc-modal-box">
+    <div class="gc-modal-header">
+      <h3>📋 신청 내용 최종 확인</h3>
+      <button class="gc-modal-close" id="gcConfirmClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p class="gc-modal-desc">아래 내용으로 신청합니다. 제출 후 수정이 어려우니 확인해 주세요.</p>
+    <div class="gc-confirm-summary" id="gcConfirmSummary"></div>
+    <div class="gc-modal-actions">
+      <button type="button" class="gc-btn-cancel" id="gcConfirmCancel">취소</button>
+      <button type="button" class="gc-btn-confirm" id="gcConfirmSubmit">
+        <i class="fa-solid fa-check"></i> 최종 제출
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 모달: 업로드 오류 ===== -->
+<div class="gc-modal-overlay" id="uploadErrorModal" style="display:none;">
+  <div class="gc-modal-box gc-error-modal">
+    <div class="gc-modal-header">
+      <h3><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b"></i> 업로드 오류 내역</h3>
+      <button class="gc-modal-close" id="errorModalClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <p class="gc-modal-desc" id="errorModalDesc">오류 행을 확인하고 수정 후 재업로드해 주세요.</p>
+    <div class="gc-error-table-wrap">
+      <table class="gc-error-table">
+        <thead><tr><th>행번호</th><th>사번</th><th>성명</th><th>오류 내용</th></tr></thead>
+        <tbody id="errorTableBody"></tbody>
+      </table>
+    </div>
+    <div class="gc-modal-actions">
+      <button type="button" class="gc-btn-excel-dl" id="errorExcelDlBtn">
+        <i class="fa-solid fa-file-excel"></i> 오류 목록 다운로드
+      </button>
+      <button type="button" class="gc-btn-confirm" id="errorModalOk">확인 완료</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 모달: 성공/상세 ===== -->
+<div class="gc-modal-overlay" id="successModal" style="display:none;">
+  <div class="gc-modal-box gc-success-modal">
+    <div class="gc-success-icon">🎉</div>
+    <h3 id="successTitle">신청 완료!</h3>
+    <p id="successDesc">상품권 전환 신청이 완료되었습니다.</p>
+    <div class="gc-success-detail" id="successDetail"></div>
+    <button type="button" class="gc-btn-confirm" id="successOkBtn">확인</button>
+  </div>
+</div>
+
+<!-- 토스트 -->
+<div id="toastContainer"></div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-logo"><div class="logo-mark sm">G</div><span>총무포털</span></div>
+    <div class="footer-info"><span>총무팀</span><span>내선 1234</span><span>gm@company.co.kr</span></div>
+    <div class="footer-copy">&copy; 2026 Company Corp.</div>
+  </div>
+</footer>
+
+<script src="js/sub-common.js"></script>
+<script src="js/reveal.js"></script>
+<script src="js/welfare.js"></script>
+
+<script>
+/* ============================================================
+   welfare.html 전용 — Supabase 연동 (헤더는 sub-common.js 처리)
+============================================================ */
+document.addEventListener('DOMContentLoaded', async function () {
+  var sessionRes = await supabaseClient.auth.getSession();
+  var session    = sessionRes.data && sessionRes.data.session;
+  if (!session) { window.location.href = 'login.html'; return; }
+
+  var { data: profile } = await supabaseClient
+    .from('user_profiles')
+    .select('emp_id, emp_name, dept_name, work_location')
+    .eq('id', session.user.id)
+    .single();
+
+  var empId   = profile ? profile.emp_id   : '';
+  var empName = profile ? profile.emp_name : session.user.email;
+
+  var heroNameEl = document.getElementById('heroEmpName');
+  if (heroNameEl) heroNameEl.textContent = empName;
+
+  if (empId) {
+    await loadPersonalData(empId, empName, profile);
+    await loadMyRequests(empId);
+  } else {
+    var noPoint = document.getElementById('noPointsNotice');
+    if (noPoint) noPoint.style.display = 'block';
+  }
+});
+
+async function loadPersonalData(empId, empName, profile) {
+  var pointData = await getEmployeePoints(empId);
+  if (!pointData) {
+    var noPoint = document.getElementById('noPointsNotice');
+    if (noPoint) noPoint.style.display = 'block';
+    setF('empId', empId); setF('empName', empName);
+    setF('empDept', (profile && profile.dept_name) || '-');
+    setF('empLoc',  (profile && profile.work_location) || '-');
+    return;
+  }
+  var avail = pointData.available_points || 0;
+  var total = pointData.total_points     || 0;
+  var prev  = pointData.prev_year_points || 0;
+  var used  = total - avail;
+
+  /* 히어로 카운트업 */
+  var numEl = document.getElementById('heroPointNumber');
+  if (numEl) {
+    var cur = 0, step = Math.ceil(avail / 60);
+    var t = setInterval(function () {
+      cur = Math.min(cur + step, avail);
+      numEl.textContent = cur.toLocaleString();
+      if (cur >= avail) clearInterval(t);
+    }, 20);
+  }
+  setT('heroAvailPt',   avail.toLocaleString() + '원');
+  setT('heroCardAvail', avail.toLocaleString() + '원');
+  setT('heroCardPrev',  prev.toLocaleString()  + '원');
+  setT('heroGaugeUsed', '사용 ' + used.toLocaleString() + '원');
+  setT('heroGaugeTotal','총 '   + total.toLocaleString() + '원');
+  var hf = document.getElementById('heroGaugeFill');
+  if (hf && total > 0) setTimeout(function () { hf.style.width = Math.round(used / total * 100) + '%'; }, 500);
+
+  setT('empTotalPt', total.toLocaleString() + '원');
+  setT('empAvailPt', avail.toLocaleString() + '원');
+  setF('empId',   empId);
+  setF('empName', empName);
+  setF('empDept', pointData.dept     || (profile && profile.dept_name)      || '-');
+  setF('empLoc',  pointData.location || (profile && profile.work_location)  || '-');
+  setT('formTotalPt', avail.toLocaleString() + ' P');
+  setT('formPrevPt',  prev.toLocaleString()  + ' P');
+
+  if (typeof CURRENT_USER !== 'undefined') {
+    CURRENT_USER.totalPt = avail; CURRENT_USER.empId = empId;
+    CURRENT_USER.name = empName; CURRENT_USER.prevYearPt = prev;
+  }
+  if (typeof EMP !== 'undefined') EMP.totalPt = avail;
+}
+
+async function loadMyRequests(empId) {
+  var requests  = await getGiftCardRequests(empId);
+  var container = document.getElementById('myRequestsList');
+  if (!container) return;
+  if (!requests || !requests.length) {
+    container.innerHTML = '<div style="text-align:center;padding:48px 20px;color:#94a3b8;"><i class="fa-solid fa-receipt" style="font-size:2.5rem;margin-bottom:16px;display:block;"></i><div style="font-size:.95rem;font-weight:600">신청 내역이 없습니다.</div></div>';
+    return;
+  }
+  var CNAMES = { lotte:'롯데', shinsegae:'신세계', daedong:'대동', hyundai:'현대' };
+  container.innerHTML = requests.map(function (r) {
+    var sc = r.status === '신청완료' ? '#16a34a' : '#d97706';
+    var sb = r.status === '신청완료' ? '#dcfce7' : '#fef9c3';
+    var dt = new Date(r.created_at).toLocaleDateString('ko-KR');
+    return '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.04)">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div style="width:40px;height:40px;background:#eff6ff;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#2563eb"><i class="fa-solid fa-gift"></i></div>' +
+          '<div><div style="font-weight:800;font-size:.95rem">' + (CNAMES[r.card_type] || r.card_type) + ' 상품권</div><div style="font-size:.78rem;color:#94a3b8;margin-top:2px">' + dt + '</div></div>' +
+        '</div>' +
+        '<span style="font-size:.8rem;font-weight:700;padding:4px 12px;border-radius:100px;background:' + sb + ';color:' + sc + '">' + r.status + '</span>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">' +
+        '<div style="background:#f8fafc;border-radius:10px;padding:12px;text-align:center"><div style="font-size:.72rem;color:#64748b;margin-bottom:4px">신청 포인트</div><div style="font-weight:700;font-size:.9rem">' + (r.apply_points||0).toLocaleString() + '원</div></div>' +
+        '<div style="background:#f0fdf4;border-radius:10px;padding:12px;text-align:center"><div style="font-size:.72rem;color:#64748b;margin-bottom:4px">실지급 금액</div><div style="font-weight:800;font-size:.9rem;color:#16a34a">' + (r.payout_amount||0).toLocaleString() + '원</div></div>' +
+        '<div style="background:#fef9c3;border-radius:10px;padding:12px;text-align:center"><div style="font-size:.72rem;color:#64748b;margin-bottom:4px">추가 지급</div><div style="font-weight:700;font-size:.9rem;color:#ca8a04">+' + (r.bonus_amount||0).toLocaleString() + '원</div></div>' +
+      '</div>' +
+      '<div style="margin-top:10px;font-size:.8rem;color:#64748b">10만권: <b>' + (r.qty_100000||0) + '</b>장 &nbsp; 5만권: <b>' + (r.qty_50000||0) + '</b>장 &nbsp; 1만권: <b>' + (r.qty_10000||0) + '</b>장 &nbsp; 5천권: <b>' + (r.qty_5000||0) + '</b>장</div>' +
+    '</div>';
+  }).join('');
+}
+
+function setT(id, v) { var e = document.getElementById(id); if (e) e.textContent = v; }
+function setF(id, v) { var e = document.getElementById(id); if (e) e.value = v; }
+</script>
+
+</body>
+</html>

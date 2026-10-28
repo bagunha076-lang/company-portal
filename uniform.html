@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- uniform.html <head> 안에 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth.js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>근무복 신청 - 모아</title>
+  <link rel="stylesheet" href="css/sub-navy.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/uniform.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="logo">
+        <img src="images/teczen-logo.png" alt="TECZEN" class="logo-img"/>
+        <span class="logo-text">모아</span>
+      </a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link active">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <button class="btn-user" id="headerUserBtn">
+          <i class="fa-solid fa-circle-user"></i>
+          <span id="headerUserName">로딩중...</span>
+        </button>
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-inner">
+      <a href="uniform.html">근무복 신청</a>
+      <a href="sports.html">체육복 신청</a>
+      <a href="welfare.html">복지포인트</a>
+      <a href="resort.html">휴양소</a>
+      <a href="admin.html">관리자</a>
+    </div>
+  </div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <!-- 서브 히어로 (사진 순환 + 제품 티커) -->
+  <section class="sub-hero" id="svcHero">
+    <div class="sub-hero-slide active">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80&auto=format&fit=crop" alt=""/>
+    </div>
+    <!--
+      TODO: 아래 2개 slide의 이미지를 원하는 사진으로 교체하세요.
+      참고 (Unsplash 무료, 저작권 걱정 없음):
+      https://unsplash.com/s/photos/work-uniform
+      https://unsplash.com/s/photos/happy-worker
+    -->
+    <div class="sub-hero-slide">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80&auto=format&fit=crop" alt=""/>
+    </div>
+    <div class="sub-hero-slide">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=80&auto=format&fit=crop" alt=""/>
+    </div>
+    <div class="sub-hero-overlay"></div>
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb">
+        <a href="index.html">홈</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>근무복 신청</span>
+      </div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-shirt"></i> 근무복 신청</div>
+      <h1>하계·동계 근무복<br/>사이즈를 신청하세요</h1>
+      <p>연간 1회 지급되는 근무복 사이즈 조사 및 신청을 진행합니다.</p>
+    </div>
+  </section>
+
+  <!-- 탭 -->
+  <div class="tab-nav-wrap">
+    <div class="tab-nav-inner">
+      <button class="tab-btn active" data-tab="uniform-apply">
+        <i class="fa-solid fa-pen-to-square"></i> 근무복 신청
+      </button>
+      <button class="tab-btn" data-tab="uniform-history">
+        <i class="fa-solid fa-clock-rotate-left"></i> 신청 이력
+      </button>
+    </div>
+  </div>
+
+  <main>
+    <!-- ===== 근무복 신청 탭 ===== -->
+    <div class="tab-panel active" id="tab-uniform-apply">
+      <div class="page-body">
+        <div class="apply-layout">
+          <div class="apply-main">
+
+            <div class="status-board reveal">
+              <div class="status-board-top">
+                <div class="status-board-title"><i class="fa-solid fa-chart-line"></i> 2026년 동계 근무복 신청 현황 — 평택공장</div>
+                <span class="badge-open" id="dDayBadge">신청중</span>
+              </div>
+
+              <!-- 캘린더 타임라인 -->
+              <div class="calendar-timeline">
+                <div class="ct-track"><div class="ct-progress" id="ctProgress"></div></div>
+                <div class="ct-points" id="ctPoints">
+                  <div class="ct-point" data-date="2026-07-01">
+                    <div class="ct-dot"></div>
+                    <div class="ct-label">신청 시작<strong>07.01</strong></div>
+                  </div>
+                  <div class="ct-point" data-date="2026-07-31">
+                    <div class="ct-dot"></div>
+                    <div class="ct-label">신청 마감<strong>07.31</strong></div>
+                  </div>
+                  <div class="ct-point" data-date="2026-08-17">
+                    <div class="ct-dot"></div>
+                    <div class="ct-label">지급 시작(예정)<strong>08.17</strong></div>
+                  </div>
+                  <div class="ct-point" data-date="2026-08-24">
+                    <div class="ct-dot"></div>
+                    <div class="ct-label">교환 마감(예정)<strong>08.24</strong></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 전사 진행률 -->
+              <div class="progress-overall">
+                <div class="progress-overall-label">
+                  <span>전사 신청 진행률 <span id="dDay" class="highlight">D-계산중</span></span>
+                  <span><strong id="overallPct">85</strong>% &nbsp;(<span id="overallCur">621</span> / <span id="overallTotal">731</span>명)</span>
+                </div>
+                <div class="progress-bar-track"><div class="progress-bar-fill" id="overallFill" data-target="85"></div></div>
+              </div>
+
+              <!-- 품목별 현황 -->
+              <div class="item-status-grid">
+                <div class="item-status">
+                  <div class="item-status-head"><span>겹점퍼</span><span>127 / 149</span></div>
+                  <div class="progress-bar-track sm"><div class="progress-bar-fill" data-target="85"></div></div>
+                </div>
+                <div class="item-status">
+                  <div class="item-status-head"><span>홑점퍼</span><span>88 / 110</span></div>
+                  <div class="progress-bar-track sm"><div class="progress-bar-fill" data-target="80"></div></div>
+                </div>
+                <div class="item-status">
+                  <div class="item-status-head"><span>하의</span><span>181 / 214</span></div>
+                  <div class="progress-bar-track sm"><div class="progress-bar-fill" data-target="85"></div></div>
+                </div>
+                <div class="item-status">
+                  <div class="item-status-head"><span>긴팔티셔츠</span><span>196 / 218</span></div>
+                  <div class="progress-bar-track sm"><div class="progress-bar-fill" data-target="90"></div></div>
+                </div>
+                <div class="item-status">
+                  <div class="item-status-head"><span>조끼</span><span>29 / 40</span></div>
+                  <div class="progress-bar-track sm"><div class="progress-bar-fill" data-target="73"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="notice-card reveal">
+              <h3><i class="fa-solid fa-circle-info"></i> 신청 전 확인사항</h3>
+              <ul>
+                <li>근무복은 <strong>연 1회</strong> 지급(하계·동계 동시 신청)되며, 중복 신청 불가합니다.</li>
+                <li>사이즈 오선택으로 인한 교환은 <strong>지급 후 7일 이내</strong>만 가능합니다.</li>
+                <li>신청 완료 후 총무팀 검토 → 발주 → 지급 순으로 진행됩니다. (약 3~4주 소요)</li>
+                <li>퇴직 예정자는 신청 전 총무팀(내선 1234)으로 문의 바랍니다.</li>
+              </ul>
+              <div class="process-strip">
+                <div class="ps-step"><div class="ps-icon"><i class="fa-solid fa-pen-to-square"></i></div><span>신청</span></div>
+                <div class="ps-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="ps-step"><div class="ps-icon"><i class="fa-solid fa-magnifying-glass"></i></div><span>검토</span></div>
+                <div class="ps-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="ps-step"><div class="ps-icon"><i class="fa-solid fa-truck-fast"></i></div><span>발주</span></div>
+                <div class="ps-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                <div class="ps-step"><div class="ps-icon"><i class="fa-solid fa-gift"></i></div><span>지급</span></div>
+              </div>
+            </div>
+
+            <div class="form-card reveal">
+              <h3 class="form-title"><i class="fa-solid fa-pen-to-square"></i> 근무복 사이즈 신청서</h3>
+              <form id="uniformForm" class="apply-form">
+
+                <div class="form-section">
+                  <h4 class="form-section-title">신청자 정보</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>사번</label>
+                      <input type="text" value="2019-0842" readonly class="input-readonly"/>
+                    </div>
+                    <div class="form-group">
+                      <label>성명</label>
+                      <input type="text" value="홍길동" readonly class="input-readonly"/>
+                    </div>
+                    <div class="form-group">
+                      <label>부서</label>
+                      <input type="text" value="총무팀" readonly class="input-readonly"/>
+                    </div>
+                    <div class="form-group">
+                      <label>연락처 <span class="req">*</span></label>
+                      <input type="tel" name="phone" placeholder="010-0000-0000" required/>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4 class="form-section-title">하복 <span class="season-badge summer">여름</span> <span class="section-hint">· 하계 근무복 (반팔 셔츠 + 하의)</span></h4>
+
+                  <div class="product-preview-grid">
+                    <div class="product-preview-card"><img src="images/uniform/summer_long_top.png" alt="긴팔상의"/><div class="ppc-name">긴팔상의</div><div class="ppc-price">21,500원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/summer_short_top.png" alt="반팔상의"/><div class="ppc-name">반팔상의</div><div class="ppc-price">20,000원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/summer_polo.png" alt="반팔티셔츠"/><div class="ppc-name">반팔티셔츠</div><div class="ppc-price">18,200원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/summer_vest.png" alt="조끼"/><div class="ppc-name">조끼</div><div class="ppc-price">18,200원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/summer_pants.png" alt="바지"/><div class="ppc-name">바지</div><div class="ppc-price">13,000원</div></div>
+                  </div>
+
+                  <div class="size-grid">
+                    <div class="size-item">
+                      <label>상의 사이즈 <span class="req">*</span></label>
+                      <select name="summer_top" required>
+                        <option value="">선택</option>
+                        <option>XS</option><option>S</option><option>M</option>
+                        <option>L</option><option>XL</option><option>XXL</option><option>XXXL</option>
+                      </select>
+                      <div class="size-guide-link" data-type="top"><i class="fa-solid fa-ruler"></i> 사이즈 가이드</div>
+                    </div>
+                    <div class="size-item">
+                      <label>하의 사이즈 <span class="req">*</span></label>
+                      <select name="summer_bottom" required>
+                        <option value="">선택</option>
+                        <option>26</option><option>28</option><option>30</option>
+                        <option>32</option><option>34</option><option>36</option><option>38</option>
+                      </select>
+                      <div class="size-guide-link" data-type="bottom"><i class="fa-solid fa-ruler"></i> 사이즈 가이드</div>
+                    </div>
+                    <div class="size-item">
+                      <label>색상</label>
+                      <div class="color-picker">
+                        <label class="color-opt"><input type="radio" name="summer_color" value="navy" checked/><span class="color-dot" style="background:#1e3a5f;"></span> 네이비</label>
+                      </div>
+                    </div>
+                    <div class="size-item">
+                      <label>수량</label>
+                      <div class="qty-control">
+                        <button type="button" class="qty-btn" data-action="minus" data-target="summerQty">−</button>
+                        <input type="number" id="summerQty" name="summer_qty" value="1" min="1" max="2" readonly/>
+                        <button type="button" class="qty-btn" data-action="plus" data-target="summerQty">+</button>
+                      </div>
+                      <span class="qty-note">최대 2벌</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4 class="form-section-title">동계 근무복 <span class="season-badge winter">겨울</span> <span class="section-hint">· 겹점퍼/홑점퍼 중 택1 + 하의, 긴팔티셔츠/조끼 중 택1</span></h4>
+
+                  <div class="product-preview-grid">
+                    <div class="product-preview-card"><img src="images/uniform/winter_gyeopjeompeo.png" alt="겹점퍼"/><div class="ppc-name">겹점퍼(동점퍼)</div><div class="ppc-price">41,000원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/winter_hotjeompeo.png" alt="홑점퍼"/><div class="ppc-name">홑점퍼(내피포함)</div><div class="ppc-price">41,000원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/winter_longsleeve.png" alt="긴팔티셔츠"/><div class="ppc-name">긴팔티셔츠</div><div class="ppc-price">22,000원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/winter_vest.png" alt="조끼"/><div class="ppc-name">조끼</div><div class="ppc-price">14,000원</div></div>
+                    <div class="product-preview-card"><img src="images/uniform/winter_pants.png" alt="바지"/><div class="ppc-name">바지</div><div class="ppc-price">14,100원</div></div>
+                  </div>
+
+                  <div class="size-grid">
+                    <div class="size-item">
+                      <label>근무복 종류 <span class="req">*</span></label>
+                      <div class="color-picker">
+                        <label class="color-opt"><input type="radio" name="winter_outer_type" value="겹점퍼" checked/> 겹점퍼</label>
+                        <label class="color-opt"><input type="radio" name="winter_outer_type" value="홑점퍼"/> 홑점퍼</label>
+                      </div>
+                    </div>
+                    <div class="size-item">
+                      <label>근무복 사이즈 <span class="req">*</span></label>
+                      <select name="winter_outer_size" required>
+                        <option value="">선택</option>
+                        <option>80</option><option>85</option><option>90</option><option>95</option>
+                        <option>100</option><option>105</option><option>110</option><option>115</option>
+                        <option>120</option><option>125</option><option>130</option><option>135</option><option>140</option>
+                      </select>
+                      <div class="size-guide-link" data-type="chest"><i class="fa-solid fa-ruler"></i> 사이즈 가이드</div>
+                    </div>
+                    <div class="size-item">
+                      <label>하의 사이즈 <span class="req">*</span></label>
+                      <select name="winter_pants_size" required>
+                        <option value="">선택</option>
+                        <option>26</option><option>27</option><option>28</option><option>29</option><option>30</option>
+                        <option>31</option><option>32</option><option>33</option><option>34</option><option>35</option>
+                        <option>36</option><option>38</option><option>40</option><option>42</option><option>44</option>
+                        <option>46</option><option>48</option><option>50</option>
+                      </select>
+                      <div class="size-guide-link" data-type="bottom"><i class="fa-solid fa-ruler"></i> 사이즈 가이드</div>
+                    </div>
+                  </div>
+                  <div class="size-grid" style="margin-top:16px;">
+                    <div class="size-item">
+                      <label>작업복 종류 <span class="req">*</span></label>
+                      <div class="color-picker">
+                        <label class="color-opt"><input type="radio" name="winter_inner_type" value="긴팔티셔츠" checked/> 긴팔티셔츠</label>
+                        <label class="color-opt"><input type="radio" name="winter_inner_type" value="조끼"/> 조끼</label>
+                      </div>
+                    </div>
+                    <div class="size-item">
+                      <label>작업복 사이즈 <span class="req">*</span></label>
+                      <select name="winter_inner_size" required>
+                        <option value="">선택</option>
+                        <option>80</option><option>85</option><option>90</option><option>95</option>
+                        <option>100</option><option>105</option><option>110</option><option>115</option>
+                        <option>120</option><option>125</option><option>130</option><option>135</option><option>140</option>
+                      </select>
+                      <div class="size-guide-link" data-type="chest"><i class="fa-solid fa-ruler"></i> 사이즈 가이드</div>
+                    </div>
+                  </div>
+
+                  <div class="extra-order-box">
+                    <div class="extra-order-title"><i class="fa-solid fa-circle-plus"></i> 추가 신청 (선택, 개인 부담)</div>
+                    <div class="size-grid" style="grid-template-columns:repeat(5,1fr);">
+                      <div class="size-item"><label>겹점퍼</label><input type="number" name="extra_gyeopjeompeo" min="0" max="5" value="0"/></div>
+                      <div class="size-item"><label>홑점퍼</label><input type="number" name="extra_hotjeompeo" min="0" max="5" value="0"/></div>
+                      <div class="size-item"><label>하의</label><input type="number" name="extra_pants" min="0" max="5" value="0"/></div>
+                      <div class="size-item"><label>긴팔티셔츠</label><input type="number" name="extra_tshirt" min="0" max="5" value="0"/></div>
+                      <div class="size-item"><label>조끼</label><input type="number" name="extra_vest" min="0" max="5" value="0"/></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-section">
+                  <h4 class="form-section-title">특이사항 / 요청사항</h4>
+                  <textarea name="remark" placeholder="특이사항이 있으면 입력하세요 (예: 소재 알레르기, 체형 특이사항 등)" rows="3"></textarea>
+                </div>
+
+                <div class="form-actions">
+                  <button type="reset" class="btn btn-secondary">초기화</button>
+                  <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> 신청하기</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="form-card reveal" id="bulkUploadCard">
+              <h3 class="form-title"><i class="fa-solid fa-file-arrow-up"></i> 부서 일괄 업로드 (담당자용)</h3>
+              <div class="apply-form">
+                <p class="section-hint" style="display:block;margin-bottom:14px;">사내 양식에 맞춰 작성한 엑셀 파일을 업로드하면 여러 명의 신청을 한 번에 등록할 수 있습니다.</p>
+                <a href="#" id="downloadTemplateBtn" class="size-guide-link" style="margin-bottom:16px;"><i class="fa-solid fa-download"></i> 업로드 양식 다운로드 (.xlsx)</a>
+
+                <label class="bulk-upload-drop" id="bulkDropZone">
+                  <i class="fa-solid fa-cloud-arrow-up"></i>
+                  <p>엑셀 파일을 끌어다 놓거나 <span class="bulk-browse">클릭해서 선택</span>하세요</p>
+                  <input type="file" id="bulkFileInput" accept=".xlsx,.xls" hidden/>
+                </label>
+
+                <div class="bulk-preview-wrap" id="bulkPreviewWrap" style="display:none;">
+                  <h4 style="margin:20px 0 12px;font-size:.92rem;font-weight:800;color:var(--gray-800);">
+                    미리보기 (<span id="bulkCount">0</span>건)
+                  </h4>
+                  <div class="table-wrap">
+                    <table class="data-table">
+                      <thead>
+                        <tr><th>소속</th><th>세부소속</th><th>성명</th><th>겹점퍼</th><th>홑점퍼</th><th>하의</th><th>긴팔티셔츠</th><th>조끼</th><th>비고</th></tr>
+                      </thead>
+                      <tbody id="bulkPreviewBody"></tbody>
+                    </table>
+                  </div>
+                  <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="bulkCancelBtn">취소</button>
+                    <button type="button" class="btn btn-primary" id="bulkSubmitBtn"><i class="fa-solid fa-check"></i> 일괄 등록하기</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <aside class="apply-sidebar">
+            <div class="sidebar-card reveal">
+              <div class="sidebar-card-title"><i class="fa-solid fa-bolt"></i> 실시간 신청 현황</div>
+              <ul class="activity-feed" id="activityFeed"></ul>
+            </div>
+            <div class="sidebar-card reveal">
+              <div class="sidebar-card-title"><i class="fa-solid fa-circle-question"></i> 자주 묻는 질문</div>
+              <ul class="faq-mini-list">
+                <li>사이즈를 잘못 선택했어요 <i class="fa-solid fa-chevron-right"></i></li>
+                <li>신청 후 변경이 가능한가요? <i class="fa-solid fa-chevron-right"></i></li>
+                <li>지급은 언제 되나요? <i class="fa-solid fa-chevron-right"></i></li>
+                <li>부서 일괄 업로드는 어떻게 하나요? <i class="fa-solid fa-chevron-right"></i></li>
+              </ul>
+            </div>
+            <div class="sidebar-card contact-card reveal">
+              <div class="sidebar-card-title"><i class="fa-solid fa-headset"></i> 담당자 문의</div>
+              <div class="contact-row"><i class="fa-solid fa-phone"></i> 내선 1234</div>
+              <div class="contact-row"><i class="fa-solid fa-envelope"></i> moa@teczen.co.kr</div>
+              <div class="contact-row"><i class="fa-solid fa-clock"></i> 평일 09:00 ~ 18:00</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== 신청 이력 탭 ===== -->
+    <div class="tab-panel" id="tab-uniform-history">
+      <div class="page-body">
+        <div class="history-filter">
+          <select><option>2026</option><option>2025</option><option>2024</option></select>
+          <button class="btn btn-secondary btn-icon" id="exportHistoryBtn" style="padding:8px 18px;font-size:.85rem;border-radius:8px;">
+            <i class="fa-solid fa-file-excel"></i> 엑셀 저장
+          </button>
+        </div>
+        <div class="table-wrap reveal">
+          <table class="data-table" id="historyTable">
+            <thead>
+              <tr>
+                <th>연도</th><th>하복 상의</th><th>하복 하의</th>
+                <th>동복 상의</th><th>동복 하의</th><th>재킷</th>
+                <th>안전화</th><th>신청일</th><th>처리상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>2026</td><td>L</td><td>32</td><td>L</td><td>32</td><td>L</td><td>-</td><td>2026.07.10</td><td><span class="chip chip-done">처리완료</span></td></tr>
+              <tr><td>2025</td><td>M</td><td>30</td><td>L</td><td>32</td><td>L</td><td>250/단화</td><td>2025.07.12</td><td><span class="chip chip-done">처리완료</span></td></tr>
+              <tr><td>2024</td><td>M</td><td>30</td><td>M</td><td>30</td><td>M</td><td>-</td><td>2024.07.08</td><td><span class="chip chip-done">처리완료</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 사이즈 가이드 모달 -->
+  <div class="modal-overlay" id="sizeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">사이즈 가이드</h3>
+        <button class="modal-close" id="modalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- 완료 모달 -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal modal-sm">
+      <div class="modal-body" style="text-align:center;padding:40px 32px;">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>신청이 완료되었습니다!</h3>
+        <p>처리 현황은 <strong>신청 이력</strong> 탭에서 확인하실 수 있습니다.<br/>처리 기간은 약 3~4주 소요됩니다.</p>
+        <button class="btn btn-primary" id="successClose" style="margin-top:24px;">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="images/teczen-logo.png" alt="TECZEN"/>
+        <div class="footer-tagline">글로벌 모빌리티 부품 전문기업</div>
+        <p class="footer-desc">모아는 테크젠 임직원을 위한 통합 총무 서비스 포털입니다. 근무복, 체육복, 복지포인트, 휴양소 예약까지 — 필요한 사내 서비스를 한 곳에서 빠르게 이용하세요.</p>
+      </div>
+      <div class="footer-quick">
+        <div class="footer-col-title">빠른 메뉴</div>
+        <div class="footer-links">
+          <a href="uniform.html"><i class="fa-solid fa-angle-right"></i> 근무복 신청</a>
+          <a href="sports.html"><i class="fa-solid fa-angle-right"></i> 체육복 신청</a>
+          <a href="welfare.html"><i class="fa-solid fa-angle-right"></i> 복지포인트</a>
+          <a href="resort.html"><i class="fa-solid fa-angle-right"></i> 휴양소 예약</a>
+          <a href="admin.html"><i class="fa-solid fa-angle-right"></i> 관리자</a>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-col-title">CONTACT</div>
+        <div class="footer-contact">
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+            <div><div class="footer-contact-label">Email</div><div class="footer-contact-value">moa@teczen.co.kr</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-phone"></i></div>
+            <div><div class="footer-contact-label">Tel</div><div class="footer-contact-value">055-000-0000 (내선 1234)</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div><div class="footer-contact-label">Address</div><div class="footer-contact-value">경남 창원시 성산구 성주로 121</div></div>
+          </div>
+          <div class="footer-contact-item">
+            <div class="footer-contact-icon"><i class="fa-solid fa-clock"></i></div>
+            <div><div class="footer-contact-label">Hours</div><div class="footer-contact-value">평일 09:00 ~ 18:00</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">&copy; 2026 TECZEN Corp. All rights reserved.</div>
+      <div class="footer-policy">
+        <a href="#">개인정보처리방침</a>
+        <a href="#">이용약관</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/uniform.js"></script>
+</body>
+</html>

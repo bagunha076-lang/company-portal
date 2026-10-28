@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- <head> 안에 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth.js"></script>
+
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>관리자 - 총무포털</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/sub.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><div class="logo-mark">G</div><span class="logo-text">총무포털</span></a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link">휴양소</a>
+        <a href="admin.html"   class="gnb-link active gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right">
+      <div class="header-right" id="headerRight">
+  <button class="btn-user" id="headerUserBtn">
+    <i class="fa-solid fa-circle-user"></i>
+    <span id="headerUserName">로딩중...</span>
+  </button>
+</div>
+
+      </div>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hero-dark">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="index.html">홈</a><i class="fa-solid fa-chevron-right"></i><span>관리자</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-shield-halved"></i> 관리자 전용</div>
+      <h1>총무 업무<br/>관리자 대시보드</h1>
+      <p>신청 현황 확인, 승인/반려 처리, 공지 관리를 한 곳에서 진행합니다.</p>
+    </div>
+  </section>
+
+  <div class="tab-nav-wrap">
+    <div class="tab-nav-inner">
+        <button class="tab-btn active" data-tab="admin-dash"><i class="fa-solid fa-chart-bar"></i> 현황 요약</button>
+        <button class="tab-btn" data-tab="admin-clothing"><i class="fa-solid fa-shirt"></i> 근무복 관리</button>
+        <button class="tab-btn" data-tab="admin-welfare"><i class="fa-solid fa-coins"></i> 복지포인트 관리</button>
+        <button class="tab-btn" data-tab="admin-resort"><i class="fa-solid fa-house-chimney-window"></i> 휴양소 관리</button>
+        <button class="tab-btn" data-tab="admin-notice"><i class="fa-solid fa-bullhorn"></i> 공지 관리</button>
+      </div>
+  </div>
+
+  <main>
+    <div class="page-body">
+
+      <!-- ===== 현황 요약 ===== -->
+      <div class="tab-panel active" id="tab-admin-dash">
+
+        <!-- KPI 카드 -->
+        <div class="kpi-grid">
+          <div class="kpi-card reveal">
+            <div class="kpi-icon kpi-blue"><i class="fa-solid fa-users"></i></div>
+            <div class="kpi-body">
+              <div class="kpi-label">전체 임직원</div>
+              <div class="kpi-value">1,402<span>명</span></div>
+            </div>
+          </div>
+          <div class="kpi-card reveal">
+            <div class="kpi-icon kpi-green"><i class="fa-solid fa-shirt"></i></div>
+            <div class="kpi-body">
+              <div class="kpi-label">근무복 신청 현황</div>
+              <div class="kpi-value">1,187<span>/ 1,402</span></div>
+              <div class="kpi-bar"><div class="kpi-fill" style="width:84.7%; background:var(--green);"></div></div>
+              <div class="kpi-rate">84.7% 신청완료</div>
+            </div>
+          </div>
+          <div class="kpi-card reveal">
+            <div class="kpi-icon kpi-orange"><i class="fa-solid fa-coins"></i></div>
+            <div class="kpi-body">
+              <div class="kpi-label">복지포인트 지급</div>
+              <div class="kpi-value">1,402<span>명</span></div>
+              <div class="kpi-bar"><div class="kpi-fill" style="width:100%; background:var(--orange);"></div></div>
+              <div class="kpi-rate">2분기 지급 완료</div>
+            </div>
+          </div>
+          <div class="kpi-card reveal">
+            <div class="kpi-icon kpi-purple"><i class="fa-solid fa-house-chimney-window"></i></div>
+            <div class="kpi-body">
+              <div class="kpi-label">휴양소 검토 대기</div>
+              <div class="kpi-value">23<span>건</span></div>
+              <div class="kpi-sub" style="color:#dc2626; font-size:0.8rem; margin-top:4px;">
+                <i class="fa-solid fa-circle-exclamation"></i> 처리 필요
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 최근 신청 -->
+        <div class="section-block">
+          <div class="section-header">
+            <h2 class="section-title" style="margin-bottom:0; border:none;">최근 신청 목록</h2>
+            <div class="search-bar">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" placeholder="사번, 이름 검색..." id="globalSearch"/>
+            </div>
+          </div>
+
+          <div class="status-table-wrap">
+            <table class="status-table" id="adminMainTable">
+              <thead>
+                <tr>
+                  <th>신청일</th>
+                  <th>사번</th>
+                  <th>성명</th>
+                  <th>부서</th>
+                  <th>구분</th>
+                  <th>신청내용</th>
+                  <th>상태</th>
+                  <th>처리</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2026.07.20</td>
+                  <td>2019-0842</td>
+                  <td>홍길동</td>
+                  <td>총무팀</td>
+                  <td><span class="badge badge-purple">휴양소</span></td>
+                  <td>강원 속초 (08.14~08.16)</td>
+                  <td><span class="status-chip chip-pending">검토중</span></td>
+                  <td class="action-cell">
+                    <button class="btn-approve">승인</button>
+                    <button class="btn-reject">반려</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2026.07.19</td>
+                  <td>2021-1123</td>
+                  <td>김철수</td>
+                  <td>개발팀</td>
+                  <td><span class="badge badge-blue">근무복</span></td>
+                  <td>하복 XL / 34</td>
+                  <td><span class="status-chip chip-pending">검토중</span></td>
+                  <td class="action-cell">
+                    <button class="btn-approve">승인</button>
+                    <button class="btn-reject">반려</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2026.07.18</td>
+                  <td>2020-0531</td>
+                  <td>이영희</td>
+                  <td>인사팀</td>
+                  <td><span class="badge badge-orange">복지포인트</span></td>
+                  <td>도서구입비 55,000원</td>
+                  <td><span class="status-chip chip-done">처리완료</span></td>
+                  <td class="action-cell">-</td>
+                </tr>
+                <tr>
+                  <td>2026.07.17</td>
+                  <td>2022-0987</td>
+                  <td>박민준</td>
+                  <td>영업팀</td>
+                  <td><span class="badge badge-purple">휴양소</span></td>
+                  <td>제주 서귀포 (08.01~08.04)</td>
+                  <td><span class="status-chip chip-pending">검토중</span></td>
+                  <td class="action-cell">
+                    <button class="btn-approve">승인</button>
+                    <button class="btn-reject">반려</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2026.07.16</td>
+                  <td>2018-0234</td>
+                  <td>최지우</td>
+                  <td>마케팅팀</td>
+                  <td><span class="badge badge-blue">근무복</span></td>
+                  <td>하복 S / 26</td>
+                  <td><span class="status-chip chip-done">처리완료</span></td>
+                  <td class="action-cell">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== 근무복 관리 ===== -->
+      <div class="tab-panel" id="tab-admin-clothing">
+
+        <div class="admin-toolbar">
+          <div class="toolbar-left">
+            <div class="stat-chip">총 신청 <strong>1,187건</strong></div>
+            <div class="stat-chip chip-pending-bg">미처리 <strong>215건</strong></div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-secondary btn-icon"><i class="fa-solid fa-file-excel"></i> 엑셀 다운로드</button>
+            <button class="btn btn-primary btn-icon" id="bulkApproveBtn"><i class="fa-solid fa-check-double"></i> 일괄 승인</button>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <select class="filter-select"><option>전체 상태</option><option>검토중</option><option>처리완료</option><option>반려</option></select>
+          <select class="filter-select"><option>전체 부서</option><option>총무팀</option><option>개발팀</option><option>인사팀</option><option>영업팀</option></select>
+          <select class="filter-select"><option>하복</option><option>동복</option></select>
+          <input type="text" class="filter-input" placeholder="사번/이름 검색"/>
+        </div>
+
+        <div class="status-table-wrap">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="clothingAllCheck"/></th>
+                <th>신청일</th>
+                <th>사번</th>
+                <th>성명</th>
+                <th>부서</th>
+                <th>하복 상의</th>
+                <th>하복 하의</th>
+                <th>동복 상의</th>
+                <th>동복 하의</th>
+                <th>색상</th>
+                <th>상태</th>
+                <th>처리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox"/></td>
+                <td>2026.07.20</td>
+                <td>2019-0842</td>
+                <td>홍길동</td>
+                <td>총무팀</td>
+                <td>L</td><td>32</td><td>L</td><td>32</td>
+                <td>네이비</td>
+                <td><span class="status-chip chip-pending">검토중</span></td>
+                <td class="action-cell">
+                  <button class="btn-approve">승인</button>
+                  <button class="btn-reject">반려</button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"/></td>
+                <td>2026.07.19</td>
+                <td>2021-1123</td>
+                <td>김철수</td>
+                <td>개발팀</td>
+                <td>XL</td><td>34</td><td>XL</td><td>34</td>
+                <td>네이비</td>
+                <td><span class="status-chip chip-pending">검토중</span></td>
+                <td class="action-cell">
+                  <button class="btn-approve">승인</button>
+                  <button class="btn-reject">반려</button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"/></td>
+                <td>2026.07.16</td>
+                <td>2018-0234</td>
+                <td>최지우</td>
+                <td>마케팅팀</td>
+                <td>S</td><td>26</td><td>S</td><td>26</td>
+                <td>그레이</td>
+                <td><span class="status-chip chip-done">처리완료</span></td>
+                <td class="action-cell">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 사이즈별 통계 -->
+        <div class="size-stats-section">
+          <h3 style="font-size:1rem; font-weight:700; margin-bottom:16px;">상의 사이즈별 집계 (하복)</h3>
+          <div class="size-bar-chart">
+            <div class="size-bar-row" data-size="XS" data-count="23" data-max="350">
+              <span class="size-label">XS</span>
+              <div class="bar-wrap"><div class="bar-fill bar-blue"></div></div>
+              <span class="bar-count">23명</span>
+            </div>
+            <div class="size-bar-row" data-size="S" data-count="87" data-max="350">
+              <span class="size-label">S</span>
+              <div class="bar-wrap"><div class="bar-fill bar-blue"></div></div>
+              <span class="bar-count">87명</span>
+            </div>
+            <div class="size-bar-row" data-size="M" data-count="312" data-max="350">
+              <span class="size-label">M</span>
+              <div class="bar-wrap"><div class="bar-fill bar-blue"></div></div>
+              <span class="bar-count">312명</span>
+            </div>
+            <div class="size-bar-row" data-size="L" data-count="345" data-max="350">
+              <span class="size-label">L</span>
+              <div class="bar-wrap"><div class="bar-fill bar-blue"></div></div>
+              <span class="bar-count">345명</span>
+            </div>
+            <div class="size-bar-row" data-size="XL" data-count="289" data-max="350">
+              <span class="size-label">XL</span>
+              <div class="bar-wrap"><div class="bar-fill bar-blue"></div></div>
+              <span class="bar-count">289명</span>
+            </div>
+            <div class="size-bar-row" data-size="XXL" data-count="102" data-max="350">
+              <span class="size-label">XXL</span>
+              <div class="bar-wrap"><div class="bar-fill bar-blue"></div></div>
+              <span class="bar-count">102명</span>
+            </div>
+            <div class="size-bar-row" data-size="XXXL" data-count="29" data-max="350">
+              <span class="size-label">XXXL</span>
+              <div class="bar-wrap"><div class="bar-fill bar-blue"></div></div>
+              <span class="bar-count">29명</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== 복지포인트 관리 ===== -->
+      <div class="tab-panel" id="tab-admin-welfare">
+
+        <div class="admin-toolbar">
+          <div class="toolbar-left">
+            <div class="stat-chip">지급 대상 <strong>1,402명</strong></div>
+            <div class="stat-chip chip-done-bg">지급완료 <strong>1,402명</strong></div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-secondary btn-icon"><i class="fa-solid fa-file-excel"></i> 엑셀 다운로드</button>
+            <button class="btn btn-primary btn-icon"><i class="fa-solid fa-paper-plane"></i> 3분기 지급 예약</button>
+          </div>
+        </div>
+
+        <div class="welfare-plan-grid">
+          <div class="wp-card reveal">
+            <h4>지급 계획 설정</h4>
+            <div class="wp-form">
+              <div class="form-group"><label>지급 분기</label>
+                <select style="width:100%; padding:9px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:0.9rem;">
+                  <option>2026년 3분기</option><option>2026년 4분기</option>
+                </select>
+              </div>
+              <div class="form-group"><label>지급일</label>
+                <input type="date" value="2026-10-01" style="width:100%; padding:9px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:0.9rem;"/>
+              </div>
+              <div class="form-group"><label>1인당 지급액</label>
+                <input type="number" value="300000" style="width:100%; padding:9px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:0.9rem;"/>
+              </div>
+              <button class="btn btn-primary" style="margin-top:8px; width:100%;">지급 예약 등록</button>
+            </div>
+          </div>
+          <div class="wp-card reveal">
+            <h4>지급 현황 요약</h4>
+            <table class="mini-table">
+              <tr><th>분기</th><th>지급일</th><th>지급액</th><th>상태</th></tr>
+              <tr><td>1분기</td><td>2026.04.01</td><td>300,000원</td><td><span class="status-chip chip-done">완료</span></td></tr>
+              <tr><td>2분기</td><td>2026.07.01</td><td>300,000원</td><td><span class="status-chip chip-done">완료</span></td></tr>
+              <tr><td>3분기</td><td>2026.10.01</td><td>300,000원</td><td><span class="status-chip chip-pending">예정</span></td></tr>
+              <tr><td>4분기</td><td>2027.01.01</td><td>300,000원</td><td><span class="status-chip chip-pending">예정</span></td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="status-table-wrap" style="margin-top:24px;">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th>사번</th><th>성명</th><th>부서</th>
+                <th>연간 지급액</th><th>사용액</th><th>잔액</th><th>비고</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2019-0842</td><td>홍길동</td><td>총무팀</td>
+                <td>600,000원</td><td>200,000원</td><td>400,000원</td><td>-</td>
+              </tr>
+              <tr>
+                <td>2021-1123</td><td>김철수</td><td>개발팀</td>
+                <td>600,000원</td><td>0원</td><td>600,000원</td><td>-</td>
+              </tr>
+              <tr>
+                <td>2020-0531</td><td>이영희</td><td>인사팀</td>
+                <td>600,000원</td><td>455,000원</td><td>145,000원</td><td>-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- ===== 휴양소 관리 ===== -->
+      <div class="tab-panel" id="tab-admin-resort">
+
+        <div class="admin-toolbar">
+          <div class="toolbar-left">
+            <div class="stat-chip chip-pending-bg">검토대기 <strong>23건</strong></div>
+            <div class="stat-chip chip-done-bg">승인완료 <strong>89건</strong></div>
+          </div>
+          <div class="toolbar-right">
+            <button class="btn btn-secondary btn-icon"><i class="fa-solid fa-file-excel"></i> 엑셀 다운로드</button>
+          </div>
+        </div>
+
+        <div class="status-table-wrap">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th>예약번호</th><th>신청일</th><th>사번</th><th>성명</th><th>부서</th>
+                <th>휴양소</th><th>입실일</th><th>퇴실일</th><th>인원</th><th>상태</th><th>처리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>R-2026-0042</td>
+                <td>2026.07.20</td>
+                <td>2019-0842</td><td>홍길동</td><td>총무팀</td>
+                <td>강원 속초</td><td>2026.08.14</td><td>2026.08.16</td><td>4명</td>
+                <td><span class="status-chip chip-pending">검토중</span></td>
+                <td class="action-cell">
+                  <button class="btn-approve">승인</button>
+                  <button class="btn-reject">반려</button>
+                </td>
+              </tr>
+              <tr>
+                <td>R-2026-0041</td>
+                <td>2026.07.17</td>
+                <td>2022-0987</td><td>박민준</td><td>영업팀</td>
+                <td>제주 서귀포</td><td>2026.08.01</td><td>2026.08.04</td><td>3명</td>
+                <td><span class="status-chip chip-pending">검토중</span></td>
+                <td class="action-cell">
+                  <button class="btn-approve">승인</button>
+                  <button class="btn-reject">반려</button>
+                </td>
+              </tr>
+              <tr>
+                <td>R-2026-0039</td>
+                <td>2026.07.10</td>
+                <td>2018-0234</td><td>최지우</td><td>마케팅팀</td>
+                <td>강원 평창</td><td>2026.07.25</td><td>2026.07.27</td><td>5명</td>
+                <td><span class="status-chip chip-done">승인완료</span></td>
+                <td class="action-cell">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- ===== 공지 관리 ===== -->
+      <div class="tab-panel" id="tab-admin-notice">
+
+        <div class="admin-toolbar" style="margin-bottom:16px;">
+          <div class="toolbar-left"></div>
+          <div class="toolbar-right">
+            <button class="btn btn-primary btn-icon" id="addNoticeBtn">
+              <i class="fa-solid fa-plus"></i> 공지 추가
+            </button>
+          </div>
+        </div>
+
+        <div class="notice-manage-list" id="noticeManageList">
+          <div class="notice-manage-item">
+            <div class="nm-drag"><i class="fa-solid fa-grip-vertical"></i></div>
+            <div class="nm-content">2026년도 하계 근무복 신청기간: 2026.07.01 ~ 2026.07.31</div>
+            <div class="nm-actions">
+              <button class="btn-nm-edit"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-nm-del"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="notice-manage-item">
+            <div class="nm-drag"><i class="fa-solid fa-grip-vertical"></i></div>
+            <div class="nm-content">복지포인트 2분기 지급 완료 (인당 300,000원)</div>
+            <div class="nm-actions">
+              <button class="btn-nm-edit"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-nm-del"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="notice-manage-item">
+            <div class="nm-drag"><i class="fa-solid fa-grip-vertical"></i></div>
+            <div class="nm-content">강원 휴양소 8월 예약 접수 중 — 마감 임박!</div>
+            <div class="nm-actions">
+              <button class="btn-nm-edit"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-nm-del"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <div class="notice-manage-item">
+            <div class="nm-drag"><i class="fa-solid fa-grip-vertical"></i></div>
+            <div class="nm-content">체육복 사이즈 조사: 2026.08.01 ~ 2026.08.15</div>
+            <div class="nm-actions">
+              <button class="btn-nm-edit"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-nm-del"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  </main>
+
+  <!-- 반려 사유 모달 -->
+  <div class="modal-overlay" id="rejectModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>반려 사유 입력</h3>
+        <button class="modal-close" id="rejectModalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <textarea id="rejectReason" rows="4" placeholder="반려 사유를 입력하세요."
+          style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:0.93rem; font-family:inherit; resize:vertical;"></textarea>
+        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:16px;">
+          <button class="btn btn-secondary" id="rejectCancelBtn">취소</button>
+          <button class="btn btn-primary" id="rejectConfirmBtn" style="background:#dc2626;">반려 처리</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 공지 추가 모달 -->
+  <div class="modal-overlay" id="addNoticeModal">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>공지 추가</h3>
+        <button class="modal-close" id="noticeModalClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <textarea id="newNoticeText" rows="3" placeholder="공지 내용을 입력하세요."
+          style="width:100%; padding:12px; border:1px solid #e2e8f0; border-radius:8px; font-size:0.93rem; font-family:inherit; resize:vertical;"></textarea>
+        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:16px;">
+          <button class="btn btn-secondary" id="noticeCancelBtn">취소</button>
+          <button class="btn btn-primary" id="noticeConfirmBtn"><i class="fa-solid fa-plus"></i> 추가</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-logo"><div class="logo-mark sm">G</div><span>총무포털</span></div><div class="footer-info"><span>총무팀</span><span>내선 1234</span><span>gm@company.co.kr</span></div><div class="footer-copy">&copy; 2026 Company Corp.</div></div></footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

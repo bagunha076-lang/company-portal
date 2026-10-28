@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <!-- <head> 안에 추가 -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/auth.js"></script>
+
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>휴양소 예약 - 총무포털</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/sub.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+  <header class="site-header" id="siteHeader">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><div class="logo-mark">G</div><span class="logo-text">총무포털</span></a>
+      <nav class="gnb">
+        <a href="uniform.html" class="gnb-link">근무복 신청</a>
+        <a href="sports.html"  class="gnb-link">체육복 신청</a>
+        <a href="welfare.html" class="gnb-link">복지포인트</a>
+        <a href="resort.html"  class="gnb-link active">휴양소</a>
+        <a href="admin.html"   class="gnb-link gnb-admin">관리자</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+  <button class="btn-user" id="headerUserBtn">
+    <i class="fa-solid fa-circle-user"></i>
+    <span id="headerUserName">로딩중...</span>
+  </button>
+</div>
+
+    </div>
+  </header>
+  <div class="mobile-drawer" id="mobileDrawer"><div class="drawer-inner">
+    <a href="uniform.html">근무복 신청</a><a href="sports.html">체육복 신청</a>
+    <a href="welfare.html">복지포인트</a><a href="resort.html">휴양소</a><a href="admin.html">관리자</a>
+  </div></div>
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+
+  <section class="sub-hero hero-purple">
+    <div class="sub-hero-inner">
+      <div class="sub-breadcrumb"><a href="index.html">홈</a><i class="fa-solid fa-chevron-right"></i><span>휴양소 예약</span></div>
+      <div class="sub-hero-tag"><i class="fa-solid fa-house-chimney-window"></i> 휴양소 예약</div>
+      <h1>전국 임직원 휴양소를<br/>편리하게 예약하세요</h1>
+      <p>강원·경남·전남·제주 전국 6개소 운영 중입니다.</p>
+    </div>
+  </section>
+
+  <div class="tab-nav-wrap">
+    <div class="tab-nav-inner">
+        <button class="tab-btn active" data-tab="resort-list"><i class="fa-solid fa-map-location-dot"></i> 휴양소 목록</button>
+        <button class="tab-btn" data-tab="resort-book"><i class="fa-solid fa-calendar-check"></i> 예약 신청</button>
+        <button class="tab-btn" data-tab="resort-history"><i class="fa-solid fa-clock-rotate-left"></i> 나의 예약</button>
+        <button class="tab-btn" data-tab="resort-guide"><i class="fa-solid fa-circle-info"></i> 이용 안내</button>
+      </div>
+  </div>
+
+  <main>
+    <div class="page-body">
+
+      <!-- ===== 휴양소 목록 ===== -->
+      <div class="tab-panel active" id="tab-resort-list">
+
+        <div class="resort-filter">
+          <button class="filter-btn active" data-region="all">전체</button>
+          <button class="filter-btn" data-region="강원">강원</button>
+          <button class="filter-btn" data-region="경상">경상</button>
+          <button class="filter-btn" data-region="전라">전라</button>
+          <button class="filter-btn" data-region="제주">제주</button>
+        </div>
+
+        <div class="resort-grid" id="resortGrid">
+
+          <div class="resort-card reveal" data-region="강원">
+            <div class="resort-img">
+              <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80&auto=format&fit=crop" alt="강원 평창 휴양소" class="resort-photo"/>
+              <div class="resort-region-tag">강원</div>
+              <div class="resort-avail avail-open">예약가능</div>
+            </div>
+            <div class="resort-info">
+              <h3>강원 평창 휴양소</h3>
+              <p class="resort-addr"><i class="fa-solid fa-location-dot"></i> 강원특별자치도 평창군 대관령면</p>
+              <div class="resort-tags">
+                <span>최대 8인</span>
+                <span>3박 이내</span>
+                <span>펜션형</span>
+              </div>
+              <div class="resort-footer">
+                <div class="resort-price">무료 이용</div>
+                <button class="btn btn-primary btn-sm" onclick="openBooking('강원 평창 휴양소')">예약하기</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="resort-card reveal" data-region="강원">
+            <div class="resort-img">
+              <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80&auto=format&fit=crop" alt="강원 속초 해변 휴양소" class="resort-photo"/>
+              <div class="resort-region-tag">강원</div>
+              <div class="resort-avail avail-full">마감임박</div>
+            </div>
+            <div class="resort-info">
+              <h3>강원 속초 해변 휴양소</h3>
+              <p class="resort-addr"><i class="fa-solid fa-location-dot"></i> 강원특별자치도 속초시 청초호반로</p>
+              <div class="resort-tags">
+                <span>최대 6인</span>
+                <span>2박 이내</span>
+                <span>오션뷰</span>
+              </div>
+              <div class="resort-footer">
+                <div class="resort-price">무료 이용</div>
+                <button class="btn btn-primary btn-sm" onclick="openBooking('강원 속초 해변 휴양소')">예약하기</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="resort-card reveal" data-region="경상">
+            <div class="resort-img">
+              <img src="https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600&q=80&auto=format&fit=crop" alt="경남 통영 해양 휴양소" class="resort-photo"/>
+              <div class="resort-region-tag">경상</div>
+              <div class="resort-avail avail-open">예약가능</div>
+            </div>
+            <div class="resort-info">
+              <h3>경남 통영 해양 휴양소</h3>
+              <p class="resort-addr"><i class="fa-solid fa-location-dot"></i> 경상남도 통영시 도남동</p>
+              <div class="resort-tags">
+                <span>최대 10인</span>
+                <span>4박 이내</span>
+                <span>단지형</span>
+              </div>
+              <div class="resort-footer">
+                <div class="resort-price">무료 이용</div>
+                <button class="btn btn-primary btn-sm" onclick="openBooking('경남 통영 해양 휴양소')">예약하기</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="resort-card reveal" data-region="전라">
+            <div class="resort-img">
+              <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80&auto=format&fit=crop" alt="전남 여수 케이블카 휴양소" class="resort-photo"/>
+              <div class="resort-region-tag">전라</div>
+              <div class="resort-avail avail-open">예약가능</div>
+            </div>
+            <div class="resort-info">
+              <h3>전남 여수 케이블카 휴양소</h3>
+              <p class="resort-addr"><i class="fa-solid fa-location-dot"></i> 전라남도 여수시 돌산읍</p>
+              <div class="resort-tags">
+                <span>최대 6인</span>
+                <span>3박 이내</span>
+                <span>오션뷰</span>
+              </div>
+              <div class="resort-footer">
+                <div class="resort-price">무료 이용</div>
+                <button class="btn btn-primary btn-sm" onclick="openBooking('전남 여수 케이블카 휴양소')">예약하기</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="resort-card reveal" data-region="제주">
+            <div class="resort-img">
+              <img src="https://images.unsplash.com/photo-1540202404-a2f29016b523?w=600&q=80&auto=format&fit=crop" alt="제주 서귀포 휴양소" class="resort-photo"/>
+              <div class="resort-region-tag">제주</div>
+              <div class="resort-avail avail-full">마감임박</div>
+            </div>
+            <div class="resort-info">
+              <h3>제주 서귀포 휴양소</h3>
+              <p class="resort-addr"><i class="fa-solid fa-location-dot"></i> 제주특별자치도 서귀포시 중문관광로</p>
+              <div class="resort-tags">
+                <span>최대 8인</span>
+                <span>4박 이내</span>
+                <span>풀빌라</span>
+              </div>
+              <div class="resort-footer">
+                <div class="resort-price">무료 이용</div>
+                <button class="btn btn-primary btn-sm" onclick="openBooking('제주 서귀포 휴양소')">예약하기</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="resort-card reveal" data-region="경상">
+            <div class="resort-img">
+              <img src="https://images.unsplash.com/photo-1548013146-72479768bada?w=600&q=80&auto=format&fit=crop" alt="경북 경주 역사 휴양소" class="resort-photo"/>
+              <div class="resort-region-tag">경상</div>
+              <div class="resort-avail avail-open">예약가능</div>
+            </div>
+            <div class="resort-info">
+              <h3>경북 경주 역사 휴양소</h3>
+              <p class="resort-addr"><i class="fa-solid fa-location-dot"></i> 경상북도 경주시 불국로</p>
+              <div class="resort-tags">
+                <span>최대 12인</span>
+                <span>3박 이내</span>
+                <span>한옥형</span>
+              </div>
+              <div class="resort-footer">
+                <div class="resort-price">무료 이용</div>
+                <button class="btn btn-primary btn-sm" onclick="openBooking('경북 경주 역사 휴양소')">예약하기</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== 예약 신청 ===== -->
+      <div class="tab-panel" id="tab-resort-book">
+
+        <div class="notice-card" style="margin-bottom:24px;">
+          <h3><i class="fa-solid fa-circle-info"></i> 신청 전 확인사항</h3>
+          <ul>
+            <li>1인당 연 <strong>2회</strong>, 회당 최대 <strong>4박</strong>까지 이용 가능합니다.</li>
+            <li>성수기(7~8월, 12~1월)는 추첨제로 운영됩니다.</li>
+            <li>예약 취소는 입실일 <strong>3일 전까지</strong>만 가능합니다.</li>
+            <li>반려동물 동반 불가, 외부인 동반 시 사전 신고 필수입니다.</li>
+          </ul>
+        </div>
+
+        <div class="form-card">
+          <h3 class="form-title"><i class="fa-solid fa-calendar-check"></i> 휴양소 예약 신청</h3>
+          <form id="resortForm" class="apply-form">
+
+            <div class="form-section">
+              <h4 class="form-section-title">신청자 정보</h4>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>사번</label>
+                  <input type="text" value="2019-0842" readonly class="input-readonly"/>
+                </div>
+                <div class="form-group">
+                  <label>성명</label>
+                  <input type="text" value="홍길동" readonly class="input-readonly"/>
+                </div>
+                <div class="form-group">
+                  <label>부서</label>
+                  <input type="text" value="총무팀" readonly class="input-readonly"/>
+                </div>
+                <div class="form-group">
+                  <label>연락처 <span class="req">*</span></label>
+                  <input type="tel" placeholder="010-0000-0000" required/>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">예약 정보</h4>
+              <div class="form-row" style="grid-template-columns: repeat(3, 1fr);">
+                <div class="form-group">
+                  <label>휴양소 선택 <span class="req">*</span></label>
+                  <select name="resort" id="resortSelect" required>
+                    <option value="">선택하세요</option>
+                    <option>강원 평창 휴양소</option>
+                    <option>강원 속초 해변 휴양소</option>
+                    <option>경남 통영 해양 휴양소</option>
+                    <option>전남 여수 케이블카 휴양소</option>
+                    <option>제주 서귀포 휴양소</option>
+                    <option>경북 경주 역사 휴양소</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>입실일 <span class="req">*</span></label>
+                  <input type="date" name="checkin" required/>
+                </div>
+                <div class="form-group">
+                  <label>퇴실일 <span class="req">*</span></label>
+                  <input type="date" name="checkout" required/>
+                </div>
+              </div>
+              <div class="form-row" style="grid-template-columns: repeat(3, 1fr); margin-top:16px;">
+                <div class="form-group">
+                  <label>이용 인원 <span class="req">*</span></label>
+                  <select name="guests" required>
+                    <option value="">선택</option>
+                    <option>1명</option><option>2명</option><option>3명</option>
+                    <option>4명</option><option>5명</option><option>6명</option>
+                    <option>7명</option><option>8명</option><option>9명</option><option>10명 이상</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>성인</label>
+                  <input type="number" name="adult" min="1" max="10" value="2"/>
+                </div>
+                <div class="form-group">
+                  <label>소아 (만 12세 미만)</label>
+                  <input type="number" name="child" min="0" max="8" value="0"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">동반자 정보 (선택)</h4>
+              <div id="companionList">
+                <div class="companion-row">
+                  <input type="text" placeholder="성명" class="comp-name"/>
+                  <input type="text" placeholder="관계 (예: 배우자)" class="comp-rel"/>
+                  <input type="text" placeholder="생년월일 (YYYYMMDD)" class="comp-birth"/>
+                  <button type="button" class="btn-remove-comp"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </div>
+              <button type="button" class="btn-add-comp" id="addCompBtn">
+                <i class="fa-solid fa-plus"></i> 동반자 추가
+              </button>
+            </div>
+
+            <div class="form-section">
+              <h4 class="form-section-title">요청사항</h4>
+              <textarea name="request" placeholder="요청사항이 있으면 입력하세요 (예: 금연 객실 희망 등)" rows="3"></textarea>
+            </div>
+
+            <!-- 예약 가능 일정 미니 달력 표시 -->
+            <div class="form-section">
+              <h4 class="form-section-title">선택 기간 요약</h4>
+              <div class="booking-summary" id="bookingSummary">
+                <p class="summary-placeholder">입실일과 퇴실일을 선택하면 자동으로 표시됩니다.</p>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="reset" class="btn btn-secondary">초기화</button>
+              <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-paper-plane"></i> 예약 신청
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- ===== 나의 예약 ===== -->
+      <div class="tab-panel" id="tab-resort-history">
+        <div class="status-table-wrap">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th>예약번호</th>
+                <th>휴양소</th>
+                <th>입실일</th>
+                <th>퇴실일</th>
+                <th>인원</th>
+                <th>신청일</th>
+                <th>상태</th>
+                <th>액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>R-2026-0042</td>
+                <td>강원 속초 해변 휴양소</td>
+                <td>2026.08.14</td>
+                <td>2026.08.16</td>
+                <td>4명</td>
+                <td>2026.07.20</td>
+                <td><span class="status-chip chip-pending">검토중</span></td>
+                <td><button class="btn-table-cancel">취소</button></td>
+              </tr>
+              <tr>
+                <td>R-2025-0118</td>
+                <td>제주 서귀포 휴양소</td>
+                <td>2025.12.26</td>
+                <td>2025.12.29</td>
+                <td>3명</td>
+                <td>2025.11.10</td>
+                <td><span class="status-chip chip-done">이용완료</span></td>
+                <td><button class="btn-table-review">후기작성</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== 이용 안내 ===== -->
+      <div class="tab-panel" id="tab-resort-guide">
+        <div class="guide-content">
+          <div class="guide-block reveal">
+            <h3><i class="fa-solid fa-calendar-check" style="color:var(--purple);"></i> 예약 방법</h3>
+            <ul>
+              <li>포털 > 휴양소 예약 > 예약 신청 탭에서 신청</li>
+              <li>총무팀 검토 후 승인/불가 안내 (1~2 영업일 소요)</li>
+              <li>성수기는 추첨제 운영 (신청기간 마감 후 결과 공지)</li>
+            </ul>
+          </div>
+          <div class="guide-block reveal">
+            <h3><i class="fa-solid fa-house-chimney-window" style="color:var(--purple);"></i> 이용 규정</h3>
+            <ul>
+              <li>연 2회, 회당 최대 4박 이용 가능 (미사용 시 소멸)</li>
+              <li>동반 가족(직계) 및 배우자 동반 가능, 타 직원과 합산 이용 불가</li>
+              <li>애완동물 동반 불가, 흡연은 지정 구역에서만 허용</li>
+              <li>퇴실 시 청소 상태 불량 시 이용 제한 조치 가능</li>
+            </ul>
+          </div>
+          <div class="guide-block reveal">
+            <h3><i class="fa-solid fa-triangle-exclamation" style="color:var(--purple);"></i> 취소/변경</h3>
+            <ul>
+              <li>입실 <strong>3일 전까지</strong> 취소 가능 (이후 취소 시 당해 이용 횟수 차감)</li>
+              <li>날짜 변경은 총무팀 직접 연락 (내선 1234)</li>
+              <li>노쇼(No-show) 발생 시 차기 연도 이용 제한</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </main>
+
+  <!-- 예약 완료 모달 -->
+  <div class="modal-overlay" id="resortSuccessModal">
+    <div class="modal modal-sm">
+      <div class="modal-body" style="text-align:center; padding:40px 32px;">
+        <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <h3>예약 신청이 완료되었습니다!</h3>
+        <p>담당자 검토 후 <strong>1~2 영업일 내</strong>에 결과를 안내드립니다.<br/>나의 예약 탭에서 현황을 확인하세요.</p>
+        <button class="btn btn-primary" id="resortSuccessClose" style="margin-top:24px;">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-logo"><div class="logo-mark sm">G</div><span>총무포털</span></div><div class="footer-info"><span>총무팀</span><span>내선 1234</span><span>gm@company.co.kr</span></div><div class="footer-copy">&copy; 2026 Company Corp.</div></div></footer>
+
+  <script src="js/sub-common.js"></script>
+  <script src="js/reveal.js"></script>
+  <script src="js/resort.js"></script>
+</body>
+</html>
