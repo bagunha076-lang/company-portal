@@ -11,6 +11,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
+        main:    resolve(__dirname, 'index.html'),
         appHome: resolve(__dirname, 'app-home.html'),
         uniform: resolve(__dirname, 'uniform.html'),
         welfare: resolve(__dirname, 'welfare.html'),
