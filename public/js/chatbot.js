@@ -66,127 +66,13 @@ var MOA_QUICK_QUESTIONS = [
 var MOA_FALLBACK = '죄송해요, 정확히 이해하지 못했어요 🙏 아래 추천 질문을 눌러보시거나 다른 표현으로 다시 물어봐 주세요.';
 
 (function () {
-  var launcher  = document.getElementById('moaChatLauncher');
-  var win       = document.getElementById('moaChatWindow');
-  var closeBtn  = document.getElementById('moaChatClose');
   var body      = document.getElementById('moaChatBody');
   var quickWrap = document.getElementById('moaChatQuick');
   var form      = document.getElementById('moaChatForm');
   var input     = document.getElementById('moaChatInput');
 
-  if (!launcher || !win) return;
+  if (!body || !form || !input) return;
 
-  var opened = false;
-  var POS_KEY = 'moaChatPos';
-
-  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-
-  /* ── 위치 저장/복원 (드래그 이동) ── */
-  function loadPosition() {
-    var size = launcher.offsetWidth || 60, margin = 28;
-    var left = window.innerWidth - size - margin;
-    var top  = window.innerHeight - size - margin;
-    try {
-      var saved = JSON.parse(localStorage.getItem(POS_KEY));
-      if (saved && typeof saved.left === 'number' && typeof saved.top === 'number') {
-        left = saved.left; top = saved.top;
-      }
-    } catch (e) {}
-    left = clamp(left, 8, window.innerWidth - size - 8);
-    top  = clamp(top, 8, window.innerHeight - size - 8);
-    applyLauncherPos(left, top);
-  }
-  function applyLauncherPos(left, top) {
-    launcher.style.left = left + 'px';
-    launcher.style.top = top + 'px';
-    launcher.style.right = 'auto';
-    launcher.style.bottom = 'auto';
-  }
-  function savePosition() {
-    try {
-      localStorage.setItem(POS_KEY, JSON.stringify({
-        left: parseFloat(launcher.style.left),
-        top: parseFloat(launcher.style.top)
-      }));
-    } catch (e) {}
-  }
-
-  /* ── 드래그 이동 ── */
-  var DRAG_THRESHOLD = 6;
-  var drag = null;
-
-  function getPoint(e) {
-    if (e.touches && e.touches.length) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    return { x: e.clientX, y: e.clientY };
-  }
-  function onDragStart(e) {
-    var p = getPoint(e);
-    var rect = launcher.getBoundingClientRect();
-    drag = { startX: p.x, startY: p.y, offsetX: p.x - rect.left, offsetY: p.y - rect.top, moved: false };
-    document.addEventListener('mousemove', onDragMove);
-    document.addEventListener('mouseup', onDragEnd);
-    document.addEventListener('touchmove', onDragMove, { passive: false });
-    document.addEventListener('touchend', onDragEnd);
-  }
-  function onDragMove(e) {
-    if (!drag) return;
-    var p = getPoint(e);
-    var dx = p.x - drag.startX, dy = p.y - drag.startY;
-    if (!drag.moved && Math.sqrt(dx * dx + dy * dy) > DRAG_THRESHOLD) {
-      drag.moved = true;
-      launcher.classList.add('dragging');
-    }
-    if (drag.moved) {
-      if (e.cancelable) e.preventDefault();
-      var size = launcher.offsetWidth;
-      var left = clamp(p.x - drag.offsetX, 8, window.innerWidth - size - 8);
-      var top  = clamp(p.y - drag.offsetY, 8, window.innerHeight - size - 8);
-      applyLauncherPos(left, top);
-    }
-  }
-  function onDragEnd() {
-    document.removeEventListener('mousemove', onDragMove);
-    document.removeEventListener('mouseup', onDragEnd);
-    document.removeEventListener('touchmove', onDragMove);
-    document.removeEventListener('touchend', onDragEnd);
-    launcher.classList.remove('dragging');
-    if (drag && drag.moved) {
-      savePosition();
-    } else {
-      toggleChat();
-    }
-    drag = null;
-  }
-  launcher.addEventListener('mousedown', onDragStart);
-  launcher.addEventListener('touchstart', onDragStart, { passive: true });
-
-  window.addEventListener('resize', function () {
-    var size = launcher.offsetWidth;
-    var left = clamp(parseFloat(launcher.style.left) || 0, 8, window.innerWidth - size - 8);
-    var top  = clamp(parseFloat(launcher.style.top)  || 0, 8, window.innerHeight - size - 8);
-    applyLauncherPos(left, top);
-  });
-
-  /* ── 채팅창을 런처 위치 근처에 배치 ── */
-  function positionChatWindow() {
-    var rect  = launcher.getBoundingClientRect();
-    var winW  = win.offsetWidth  || 380;
-    var winH  = win.offsetHeight || 560;
-    var margin = 12;
-    var left = clamp(rect.right - winW, 8, window.innerWidth - winW - 8);
-    var top;
-    if (rect.top - winH - margin >= 8) {
-      top = rect.top - winH - margin;
-    } else {
-      top = clamp(rect.bottom + margin, 8, window.innerHeight - winH - 8);
-    }
-    win.style.left = left + 'px';
-    win.style.top = top + 'px';
-    win.style.right = 'auto';
-    win.style.bottom = 'auto';
-  }
-
-  /* ── 채팅 로직 ── */
   function scrollToBottom() { body.scrollTop = body.scrollHeight; }
 
   function addMessage(text, who) {
@@ -243,27 +129,11 @@ var MOA_FALLBACK = '죄송해요, 정확히 이해하지 못했어요 🙏 아�
     }, 600 + Math.random() * 400);
   }
 
-  function toggleChat() {
-    if (!opened) {
-      positionChatWindow();
-      win.classList.add('open');
-      launcher.classList.add('hide');
-      opened = true;
-      if (!body.children.length) {
-        addMessage('안녕하세요! 모아 복지도우미입니다 👋\n근무복·복지포인트·경조사·휴양소 등 궁금한 사내 복지제도를 물어보세요.', 'bot');
-        renderQuickChips();
-      }
-    } else {
-      win.classList.remove('open');
-      launcher.classList.remove('hide');
-      opened = false;
-    }
-  }
-  closeBtn && closeBtn.addEventListener('click', toggleChat);
-  form && form.addEventListener('submit', function (e) {
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
     handleUserInput(input.value);
   });
 
-  loadPosition();
+  addMessage('안녕하세요! 모아 복지도우미입니다 👋\n근무복·복지포인트·경조사·휴양소 등 궁금한 사내 복지제도를 물어보세요.', 'bot');
+  renderQuickChips();
 })();

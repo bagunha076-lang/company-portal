@@ -1,6 +1,5 @@
-const CACHE_NAME = 'moa-cache-v2';
+const CACHE_NAME = 'moa-cache-v3';
 const APP_SHELL = [
-  'index.html',
   'app-home.html',
   'manifest.webmanifest',
   'icons/icon-192.png',
@@ -33,7 +32,7 @@ self.addEventListener('fetch', function (event) {
         var copy = res.clone();
         caches.open(CACHE_NAME).then(function (cache) { cache.put(req, copy); });
         return res;
-      }).catch(function () { return caches.match(req).then(function (res) { return res || caches.match('index.html'); }); })
+      }).catch(function () { return caches.match(req).then(function (res) { return res || caches.match('app-home.html'); }); })
     );
     return;
   }

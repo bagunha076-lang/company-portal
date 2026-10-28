@@ -215,7 +215,7 @@
     /* 이미 로그인된 경우 메인으로 */
     sb.auth.getSession().then(function(res) {
       if (res.data && res.data.session) {
-        window.location.href = 'index.html';
+        window.location.href = 'app-home.html';
       }
     });
 
@@ -287,7 +287,7 @@
         /* 로그인 성공 → 메인으로 */
         showAlert('로그인 성공! 이동 중...', 'suc');
         setTimeout(function() {
-          window.location.href = 'index.html';
+          window.location.href = 'app-home.html';
         }, 800);
 
       } catch(err) {
